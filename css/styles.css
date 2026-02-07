@@ -393,8 +393,7 @@ input[type="range"]::-moz-range-thumb {
 .cta-label {
   font-size: 0.8125rem;
   color: var(--text-secondary);
-  margin-bottom: 16px;
-}
+  }
 
 .cta-row {
   display: flex;
@@ -423,6 +422,7 @@ input[type="range"]::-moz-range-thumb {
   font-size: 0.8125rem;
   font-weight: 500;
   transition: all 0.15s ease;
+  margin-bottom: 16px;
 }
 
 .cta-link:hover {
