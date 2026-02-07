@@ -385,10 +385,10 @@ input[type="range"]::-moz-range-thumb {
 
 /* ✅ 3 columnas, filas automáticas, spacing consistente */
 .cta-links{
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  column-gap: 12px;  /* espacio horizontal */
-  row-gap: 18px;     /* espacio vertical entre filas (ajústalo) */
+  display:grid !important;
+  grid-template-columns:repeat(3,1fr) !important;
+  column-gap:12px !important;
+  row-gap:24px !important;
 }
 
 .cta-link {
