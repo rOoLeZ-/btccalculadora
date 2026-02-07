@@ -588,6 +588,24 @@ footer a:hover {
   line-height: 1.6;
 }
 
+.blog-card {
+  position: relative;
+}
+
+.blog-card h3 a::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.blog-card:hover {
+  border-color: var(--accent);
+  cursor: pointer;
+}
+
 /* Article Styles */
 .article-content {
   font-size: 1rem;
@@ -669,21 +687,4 @@ footer a:hover {
   .nav-link {
     text-align: center;
   }
-}
-.blog-card {
-  position: relative;
-}
-
-.blog-card h3 a::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.blog-card:hover {
-  border-color: var(--accent);
-  cursor: pointer;
 }
