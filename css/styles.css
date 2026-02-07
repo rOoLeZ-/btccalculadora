@@ -396,13 +396,19 @@ input[type="range"]::-moz-range-thumb {
   margin-bottom: 16px;
 }
 
-.cta-links {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+.cta-row {
+  display: flex;
   gap: 12px;
+  margin-bottom: 12px;
+}
+
+.cta-row:last-child {
+  margin-bottom: 0;
 }
 
 .cta-link {
+  flex: 1;
+  max-width: calc(33.333% - 8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -430,10 +436,13 @@ input[type="range"]::-moz-range-thumb {
   opacity: 0.7;
 }
 
-/* Responsive - dentro del media query existente */
 @media (max-width: 480px) {
-  .cta-links {
-    grid-template-columns: 1fr;
+  .cta-row {
+    flex-direction: column;
+  }
+  
+  .cta-link {
+    max-width: 100%;
   }
 }
 
