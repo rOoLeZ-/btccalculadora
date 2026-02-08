@@ -55,7 +55,7 @@
       {
         "@type": "Question",
         "name": "¿De dónde salen los datos de precio histórico?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Utilizamos la API de CoinGecko que proporciona datos históricos diarios del precio de Bitcoin en euros desde 2013." }
+        "acceptedAnswer": { "@type": "Answer", "text": "Utilizamos la API de Binance para datos recientes (desde 2019) y CoinGecko para datos históricos anteriores, ambas fuentes proporcionan precios de Bitcoin en euros." }
       }
     ]
   }
@@ -111,15 +111,15 @@
       </div>
     <!-- Navegación entre calculadoras -->
     <nav class="nav-calculadoras" aria-label="Calculadoras disponibles">
-      <a href="/" class="nav-link ">Sueldo</a>
-      <a href="/calculadora-dca/" class="nav-link ">DCA</a>
-      <a href="/conversor/" class="nav-link ">Conversor</a>
-      <a href="/si-hubiera-comprado/" class="nav-link active">Si hubiera...</a>
-      <a href="/calculadora-impuestos/" class="nav-link ">Impuestos</a>
-      <a href="/calculadora-fees/" class="nav-link ">Fees</a>
-      <a href="/comparador-exchanges/" class="nav-link ">Exchanges</a>
-      <a href="/calculadora-herencia/" class="nav-link ">Herencia</a>
-      <a href="/blog/" class="nav-link ">Blog</a>
+      <a href="/" class="nav-link ">💰 Sueldo</a>
+      <a href="/calculadora-dca/" class="nav-link ">📈 DCA</a>
+      <a href="/conversor/" class="nav-link ">🔄 Conversor</a>
+      <a href="/si-hubiera-comprado/" class="nav-link active">🕰️ Si hubiera</a>
+      <a href="/calculadora-impuestos/" class="nav-link ">🧾 Impuestos</a>
+      <a href="/calculadora-fees/" class="nav-link ">⛏️ Fees</a>
+      <a href="/comparador-exchanges/" class="nav-link ">🏦 Exchanges</a>
+      <a href="/calculadora-herencia/" class="nav-link ">📜 Herencia</a>
+      <a href="/blog/" class="nav-link ">📝 Blog</a>
     </nav>
 
     </div>
@@ -216,14 +216,14 @@
       <button class="share-btn" id="share-result">Compartir mi resultado en X</button>
     </div>
 
-    <p class="disclaimer">* Datos históricos proporcionados por CoinGecko. Rendimientos pasados no garantizan resultados futuros. Esto no es asesoramiento financiero.</p>
+    <p class="disclaimer">* Datos históricos de Binance y CoinGecko. Rendimientos pasados no garantizan resultados futuros. Esto no es asesoramiento financiero.</p>
 
     <!-- FAQ -->
     <section class="faq" style="margin-top:48px;">
       <h2 class="faq-title">Preguntas frecuentes</h2>
       <details class="faq-item">
         <summary>¿Desde qué fecha hay datos disponibles?</summary>
-        <p>Los datos históricos de Bitcoin en euros están disponibles desde abril de 2013, cuando los primeros exchanges europeos comenzaron a operar con suficiente volumen para ofrecer precios fiables.</p>
+        <p>Los datos históricos de Bitcoin en euros están disponibles desde abril de 2013. Usamos la API de Binance como fuente principal (desde 2019) y CoinGecko como respaldo para fechas anteriores.</p>
       </details>
       <details class="faq-item">
         <summary>¿Los datos incluyen comisiones de compra?</summary>
@@ -316,30 +316,88 @@
       });
     });
 
-    async function fetchHistoricalPrice(dateStr) {
-      // Use /market_chart/range with a 24h window around the target date
-      // This endpoint is more reliable without API key than /history
+    // --- Multi-source historical BTC/EUR price with 3 independent APIs ---
+
+    async function fetchFromCryptoCompare(dateStr) {
+      // CryptoCompare histoday: free, CORS, BTC/EUR directly, no key needed
+      // Returns daily OHLC data; we use the close price
+      const targetDate = new Date(dateStr + 'T23:59:59Z');
+      const toTs = Math.floor(targetDate.getTime() / 1000);
+      const url = `https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=EUR&limit=1&toTs=${toTs}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('CC_HTTP_' + res.status);
+      const data = await res.json();
+      if (data.Response !== 'Success') throw new Error('CC_API_ERROR');
+      const entries = data.Data?.Data;
+      if (!entries || entries.length === 0) throw new Error('NO_DATA');
+      // Last entry is the target date
+      const entry = entries[entries.length - 1];
+      const price = (entry.open + entry.close) / 2;
+      if (price <= 0) throw new Error('NO_DATA');
+      return price;
+    }
+
+    async function fetchFromBinance(dateStr) {
+      // Binance klines: free, CORS, BTCEUR pair (available since ~2019)
+      const targetDate = new Date(dateStr + 'T00:00:00Z');
+      const startTime = targetDate.getTime();
+      const endTime = startTime + 86400000;
+      const url = `https://api.binance.com/api/v3/klines?symbol=BTCEUR&interval=1d&startTime=${startTime}&endTime=${endTime}&limit=1`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('BIN_HTTP_' + res.status);
+      const data = await res.json();
+      if (!data || data.length === 0) throw new Error('NO_DATA');
+      const open = parseFloat(data[0][1]);
+      const close = parseFloat(data[0][4]);
+      if (isNaN(open) || isNaN(close)) throw new Error('NO_DATA');
+      return (open + close) / 2;
+    }
+
+    async function fetchFromCoinGecko(dateStr) {
+      // CoinGecko market_chart/range: free tier, may require demo key
       const targetDate = new Date(dateStr + 'T12:00:00Z');
-      const from = Math.floor(targetDate.getTime() / 1000) - 43200; // -12h
-      const to = Math.floor(targetDate.getTime() / 1000) + 43200;   // +12h
+      const from = Math.floor(targetDate.getTime() / 1000) - 43200;
+      const to = Math.floor(targetDate.getTime() / 1000) + 43200;
       const url = `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=eur&from=${from}&to=${to}`;
-      let res = await fetch(url);
-      // Retry once after 3s on rate limit
+      const res = await fetch(url);
       if (res.status === 429) {
         await new Promise(r => setTimeout(r, 3000));
-        res = await fetch(url);
+        const retry = await fetch(url);
+        if (!retry.ok) throw new Error('RATE_LIMIT');
+        const d = await retry.json();
+        if (!d.prices || d.prices.length === 0) throw new Error('NO_DATA');
+        return d.prices[Math.floor(d.prices.length / 2)][1];
       }
-      if (res.status === 429) throw new Error('RATE_LIMIT');
-      if (!res.ok) throw new Error('API_ERROR');
+      if (!res.ok) throw new Error('CG_HTTP_' + res.status);
       const data = await res.json();
       if (!data.prices || data.prices.length === 0) throw new Error('NO_DATA');
-      // Return the price closest to midday
       const midday = targetDate.getTime();
       let closest = data.prices[0];
       for (const p of data.prices) {
         if (Math.abs(p[0] - midday) < Math.abs(closest[0] - midday)) closest = p;
       }
       return closest[1];
+    }
+
+    async function fetchHistoricalPrice(dateStr) {
+      const sources = [
+        { name: 'CryptoCompare', fn: fetchFromCryptoCompare },
+        { name: 'Binance', fn: fetchFromBinance },
+        { name: 'CoinGecko', fn: fetchFromCoinGecko }
+      ];
+      for (const src of sources) {
+        try {
+          const price = await src.fn(dateStr);
+          if (price && price > 0) {
+            console.log(`✅ Precio histórico de ${src.name}: ${price.toFixed(2)} EUR`);
+            return price;
+          }
+        } catch (e) {
+          console.warn(`⚠️ ${src.name} falló: ${e.message}`);
+        }
+      }
+      throw new Error('ALL_SOURCES_FAILED');
+    }
     }
 
     calcBtn.addEventListener('click', async () => {
@@ -406,14 +464,13 @@
         };
 
       } catch (e) {
-        if (e.message === 'RATE_LIMIT') {
-          errorDiv.textContent = 'API saturada. Espera unos segundos y vuelve a intentar.';
-        } else if (e.message === 'NO_DATA') {
-          errorDiv.textContent = 'No hay datos para esta fecha. Prueba con otra fecha (desde abril 2013).';
+        if (e.message === 'ALL_SOURCES_FAILED') {
+          errorDiv.textContent = 'No se encontraron datos para esta fecha en ninguna fuente. Prueba con otra fecha (desde abril 2013).';
         } else {
           errorDiv.textContent = 'Error al consultar datos. Reintenta en unos segundos.';
         }
         errorDiv.style.display = 'block';
+        console.error('Error completo:', e);
       } finally {
         calcBtn.disabled = false;
         calcBtn.textContent = 'Calcular';
