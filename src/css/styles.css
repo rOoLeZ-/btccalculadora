@@ -79,7 +79,7 @@ body {
 }
 
 /* --- Container --- */
-.container { max-width: 600px; margin: 0 auto; padding: 100px 24px 80px; }
+.container { max-width: 600px; margin: 0 auto; padding: 140px 24px 80px; }
 
 /* Hide old header (now in nav bar) */
 header { display: none; }
@@ -162,13 +162,14 @@ footer a:hover { text-decoration: underline; }
 .nav-calculadoras {
   display: flex;
   gap: 6px;
-  padding: 8px 0 10px;
+  padding: 8px 24px 10px 0;
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
   -webkit-overflow-scrolling: touch;
 }
 .nav-calculadoras::-webkit-scrollbar { display: none; }
+.nav-calculadoras::after { content: ''; flex-shrink: 0; width: 24px; }
 .nav-link {
   padding: 6px 14px;
   background: transparent;

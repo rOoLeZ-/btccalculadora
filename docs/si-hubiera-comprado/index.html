@@ -83,8 +83,8 @@
   </script>
 
 
-<style>
-    .quick-dates { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  <style>
+.quick-dates { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
     .quick-date { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text-secondary); padding: 6px 12px; font-size: 0.8125rem; cursor: pointer; transition: all 0.2s; }
     .quick-date:hover { border-color: var(--accent); color: var(--accent); }
     .calc-btn { width: 100%; padding: 16px; background: var(--accent); color: #000; font-weight: 600; font-size: 1rem; border: none; border-radius: 12px; cursor: pointer; transition: opacity 0.2s; margin: 24px 0; }
@@ -317,14 +317,20 @@
     });
 
     async function fetchHistoricalPrice(dateStr) {
-      // CoinGecko /coins/bitcoin/history?date=DD-MM-YYYY (free, no API key)
+      // CoinGecko /coins/bitcoin/history?date=DD-MM-YYYY
       const [y, m, d] = dateStr.split('-');
       const cgDate = `${d}-${m}-${y}`;
       const url = `https://api.coingecko.com/api/v3/coins/bitcoin/history?date=${cgDate}&localization=false`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('API error');
+      let res = await fetch(url);
+      // Retry once after 2s on rate limit
+      if (res.status === 429) {
+        await new Promise(r => setTimeout(r, 2000));
+        res = await fetch(url);
+      }
+      if (res.status === 429) throw new Error('RATE_LIMIT');
+      if (!res.ok) throw new Error('API_ERROR');
       const data = await res.json();
-      if (!data.market_data) throw new Error('No data for this date');
+      if (!data.market_data) throw new Error('NO_DATA');
       return data.market_data.current_price.eur;
     }
 
@@ -392,7 +398,13 @@
         };
 
       } catch (e) {
-        errorDiv.textContent = 'No hay datos para esta fecha. Prueba con otra fecha (desde abril 2013).';
+        if (e.message === 'RATE_LIMIT') {
+          errorDiv.textContent = 'API saturada. Espera unos segundos y vuelve a intentar.';
+        } else if (e.message === 'NO_DATA') {
+          errorDiv.textContent = 'No hay datos para esta fecha. Prueba con otra fecha (desde abril 2013).';
+        } else {
+          errorDiv.textContent = 'Error al consultar datos. Reintenta en unos segundos.';
+        }
         errorDiv.style.display = 'block';
       } finally {
         calcBtn.disabled = false;

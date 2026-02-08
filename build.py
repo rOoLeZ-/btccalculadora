@@ -154,7 +154,9 @@ TOOL_LAYOUT = """<!DOCTYPE html>
 <head>
 {{>head}}
 {{#extra_styles}}
+  <style>
 {{extra_styles}}
+  </style>
 {{/extra_styles}}
 </head>
 <body>

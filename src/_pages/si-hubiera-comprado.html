@@ -65,14 +65,20 @@ extra_scripts: |
     });
 
     async function fetchHistoricalPrice(dateStr) {
-      // CoinGecko /coins/bitcoin/history?date=DD-MM-YYYY (free, no API key)
+      // CoinGecko /coins/bitcoin/history?date=DD-MM-YYYY
       const [y, m, d] = dateStr.split('-');
       const cgDate = `${d}-${m}-${y}`;
       const url = `https://api.coingecko.com/api/v3/coins/bitcoin/history?date=${cgDate}&localization=false`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('API error');
+      let res = await fetch(url);
+      // Retry once after 2s on rate limit
+      if (res.status === 429) {
+        await new Promise(r => setTimeout(r, 2000));
+        res = await fetch(url);
+      }
+      if (res.status === 429) throw new Error('RATE_LIMIT');
+      if (!res.ok) throw new Error('API_ERROR');
       const data = await res.json();
-      if (!data.market_data) throw new Error('No data for this date');
+      if (!data.market_data) throw new Error('NO_DATA');
       return data.market_data.current_price.eur;
     }
 
@@ -140,7 +146,13 @@ extra_scripts: |
         };
 
       } catch (e) {
-        errorDiv.textContent = 'No hay datos para esta fecha. Prueba con otra fecha (desde abril 2013).';
+        if (e.message === 'RATE_LIMIT') {
+          errorDiv.textContent = 'API saturada. Espera unos segundos y vuelve a intentar.';
+        } else if (e.message === 'NO_DATA') {
+          errorDiv.textContent = 'No hay datos para esta fecha. Prueba con otra fecha (desde abril 2013).';
+        } else {
+          errorDiv.textContent = 'Error al consultar datos. Reintenta en unos segundos.';
+        }
         errorDiv.style.display = 'block';
       } finally {
         calcBtn.disabled = false;
@@ -151,7 +163,6 @@ extra_scripts: |
     initPriceUpdates();
   </script>
 extra_styles: |
-  <style>
     .quick-dates { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
     .quick-date { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text-secondary); padding: 6px 12px; font-size: 0.8125rem; cursor: pointer; transition: all 0.2s; }
     .quick-date:hover { border-color: var(--accent); color: var(--accent); }
@@ -162,7 +173,6 @@ extra_styles: |
     .positive { color: var(--green) !important; }
     .negative { color: var(--red) !important; }
     input[type="date"] { flex: 1; background: transparent; border: none; outline: none; font-family: 'Geist Mono', monospace; font-size: 1.125rem; color: var(--text); padding: 16px 20px; width: 100%; color-scheme: dark; }
-  </style>
 ---
 
     <div class="hero-text">
