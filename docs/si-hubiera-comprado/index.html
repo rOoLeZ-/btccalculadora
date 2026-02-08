@@ -111,15 +111,15 @@
       </div>
     <!-- Navegación entre calculadoras -->
     <nav class="nav-calculadoras" aria-label="Calculadoras disponibles">
-      <a href="/" class="nav-link ">💰 Sueldo</a>
-      <a href="/calculadora-dca/" class="nav-link ">📈 DCA</a>
-      <a href="/conversor/" class="nav-link ">🔄 Conversor</a>
-      <a href="/si-hubiera-comprado/" class="nav-link active">🕰️ Si hubiera...</a>
-      <a href="/calculadora-impuestos/" class="nav-link ">🧾 Impuestos</a>
-      <a href="/calculadora-fees/" class="nav-link ">⛏️ Fees</a>
-      <a href="/comparador-exchanges/" class="nav-link ">🏦 Exchanges</a>
-      <a href="/calculadora-herencia/" class="nav-link ">📜 Herencia</a>
-      <a href="/blog/" class="nav-link ">📝 Blog</a>
+      <a href="/" class="nav-link ">Sueldo</a>
+      <a href="/calculadora-dca/" class="nav-link ">DCA</a>
+      <a href="/conversor/" class="nav-link ">Conversor</a>
+      <a href="/si-hubiera-comprado/" class="nav-link active">Si hubiera...</a>
+      <a href="/calculadora-impuestos/" class="nav-link ">Impuestos</a>
+      <a href="/calculadora-fees/" class="nav-link ">Fees</a>
+      <a href="/comparador-exchanges/" class="nav-link ">Exchanges</a>
+      <a href="/calculadora-herencia/" class="nav-link ">Herencia</a>
+      <a href="/blog/" class="nav-link ">Blog</a>
     </nav>
 
     </div>
@@ -317,21 +317,29 @@
     });
 
     async function fetchHistoricalPrice(dateStr) {
-      // CoinGecko /coins/bitcoin/history?date=DD-MM-YYYY
-      const [y, m, d] = dateStr.split('-');
-      const cgDate = `${d}-${m}-${y}`;
-      const url = `https://api.coingecko.com/api/v3/coins/bitcoin/history?date=${cgDate}&localization=false`;
+      // Use /market_chart/range with a 24h window around the target date
+      // This endpoint is more reliable without API key than /history
+      const targetDate = new Date(dateStr + 'T12:00:00Z');
+      const from = Math.floor(targetDate.getTime() / 1000) - 43200; // -12h
+      const to = Math.floor(targetDate.getTime() / 1000) + 43200;   // +12h
+      const url = `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=eur&from=${from}&to=${to}`;
       let res = await fetch(url);
-      // Retry once after 2s on rate limit
+      // Retry once after 3s on rate limit
       if (res.status === 429) {
-        await new Promise(r => setTimeout(r, 2000));
+        await new Promise(r => setTimeout(r, 3000));
         res = await fetch(url);
       }
       if (res.status === 429) throw new Error('RATE_LIMIT');
       if (!res.ok) throw new Error('API_ERROR');
       const data = await res.json();
-      if (!data.market_data) throw new Error('NO_DATA');
-      return data.market_data.current_price.eur;
+      if (!data.prices || data.prices.length === 0) throw new Error('NO_DATA');
+      // Return the price closest to midday
+      const midday = targetDate.getTime();
+      let closest = data.prices[0];
+      for (const p of data.prices) {
+        if (Math.abs(p[0] - midday) < Math.abs(closest[0] - midday)) closest = p;
+      }
+      return closest[1];
     }
 
     calcBtn.addEventListener('click', async () => {
