@@ -36,16 +36,24 @@ def parse_frontmatter(content):
     """
     Extrae frontmatter delimitado por --- al inicio del archivo.
     Soporta valores simples key: value y bloques multilínea con key: |
+    El cierre --- debe estar solo en su propia línea (no dentro de comentarios).
     """
     if not content.startswith('---'):
         return {}, content
     
-    end = content.find('---', 3)
-    if end == -1:
+    # Find closing --- that is on its own line
+    lines = content.split('\n')
+    end_line = -1
+    for i in range(1, len(lines)):
+        if lines[i].strip() == '---':
+            end_line = i
+            break
+    
+    if end_line == -1:
         return {}, content
     
-    frontmatter_str = content[3:end].strip()
-    body = content[end + 3:].strip()
+    frontmatter_str = '\n'.join(lines[1:end_line])
+    body = '\n'.join(lines[end_line + 1:]).strip()
     
     meta = {}
     current_key = None
@@ -159,6 +167,7 @@ TOOL_LAYOUT = """<!DOCTYPE html>
           <span>Bitcoin Calculadora</span>
           <span class="nav-subtitle">{{subtitle}}</span>
         </a>
+        <button class="nav-hamburger" onclick="document.querySelector('.nav-calculadoras').classList.toggle('open');this.textContent=this.textContent==='☰'?'✕':'☰'" aria-label="Menú">☰</button>
       </div>
 {{>nav}}
     </div>
@@ -191,6 +200,7 @@ BLOG_LAYOUT = """<!DOCTYPE html>
           <svg class="btc-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="#f7931a"/><path d="M67.8 44.3c1-6.6-4-10.2-10.9-12.5l2.2-8.9-5.4-1.3-2.2 8.7c-1.4-.4-2.9-.7-4.3-1l2.2-8.7-5.4-1.3-2.2 8.9c-1.2-.3-2.3-.5-3.4-.8l-7.5-1.9-1.4 5.8s4 .9 3.9 1c2.2.5 2.6 2 2.5 3.1l-2.5 10.2c.2 0 .3.1.5.1l-.5-.1-3.6 14.3c-.3.7-.9 1.7-2.5 1.3.1.1-3.9-1-3.9-1L22 66l7 1.7c1.3.3 2.6.7 3.9 1l-2.3 9 5.4 1.3 2.2-8.9c1.5.4 2.9.8 4.3 1.1l-2.2 8.8 5.4 1.3 2.3-9c9.3 1.8 16.3.7 19.3-7.4 2.4-6.5-.1-10.3-4.8-12.7 3.4-.8 6-3.1 6.7-7.9zM58 55c-1.7 6.8-13.2 3.1-16.9 2.2l3-12.1c3.7.9 15.7 2.8 13.9 9.9zm1.7-17.5c-1.6 6.2-11.1 3-14.2 2.3l2.7-11c3.1.8 13.2 2.2 11.5 8.7z" fill="#fff"/></svg>
           <span>Bitcoin Calculadora</span>
         </a>
+        <button class="nav-hamburger" onclick="document.querySelector('.nav-calculadoras').classList.toggle('open');this.textContent=this.textContent==='☰'?'✕':'☰'" aria-label="Menú">☰</button>
       </div>
 {{>nav}}
     </div>
@@ -219,6 +229,7 @@ BLOG_ARTICLE_LAYOUT = """<!DOCTYPE html>
           <svg class="btc-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="#f7931a"/><path d="M67.8 44.3c1-6.6-4-10.2-10.9-12.5l2.2-8.9-5.4-1.3-2.2 8.7c-1.4-.4-2.9-.7-4.3-1l2.2-8.7-5.4-1.3-2.2 8.9c-1.2-.3-2.3-.5-3.4-.8l-7.5-1.9-1.4 5.8s4 .9 3.9 1c2.2.5 2.6 2 2.5 3.1l-2.5 10.2c.2 0 .3.1.5.1l-.5-.1-3.6 14.3c-.3.7-.9 1.7-2.5 1.3.1.1-3.9-1-3.9-1L22 66l7 1.7c1.3.3 2.6.7 3.9 1l-2.3 9 5.4 1.3 2.2-8.9c1.5.4 2.9.8 4.3 1.1l-2.2 8.8 5.4 1.3 2.3-9c9.3 1.8 16.3.7 19.3-7.4 2.4-6.5-.1-10.3-4.8-12.7 3.4-.8 6-3.1 6.7-7.9zM58 55c-1.7 6.8-13.2 3.1-16.9 2.2l3-12.1c3.7.9 15.7 2.8 13.9 9.9zm1.7-17.5c-1.6 6.2-11.1 3-14.2 2.3l2.7-11c3.1.8 13.2 2.2 11.5 8.7z" fill="#fff"/></svg>
           <span>Bitcoin Calculadora</span>
         </a>
+        <button class="nav-hamburger" onclick="document.querySelector('.nav-calculadoras').classList.toggle('open');this.textContent=this.textContent==='☰'?'✕':'☰'" aria-label="Menú">☰</button>
       </div>
 {{>nav}}
     </div>

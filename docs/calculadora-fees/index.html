@@ -105,6 +105,7 @@
           <span>Bitcoin Calculadora</span>
           <span class="nav-subtitle">Calculadora de fees Bitcoin</span>
         </a>
+        <button class="nav-hamburger" onclick="document.querySelector('.nav-calculadoras').classList.toggle('open');this.textContent=this.textContent==='☰'?'✕':'☰'" aria-label="Menú">☰</button>
       </div>
     <!-- Navegación entre calculadoras -->
     <nav class="nav-calculadoras" aria-label="Calculadoras disponibles">
@@ -124,128 +125,7 @@
 
   <main class="container">
 
-Fees Calculator ---
-    // Typical transaction sizes in virtual bytes (vB)
-    const TX_SIZES = {
-      'simple':    { vB: 140, label: 'Simple (1→1)', desc: '1 input, 1 output (SegWit)' },
-      'normal':    { vB: 225, label: 'Normal (1→2)', desc: '1 input, 2 outputs (pago + cambio)' },
-      'consolidar': { vB: 400, label: 'Consolidar (3→1)', desc: '3 inputs, 1 output' },
-      'compleja':  { vB: 600, label: 'Compleja (5→2)', desc: '5 inputs, 2 outputs' }
-    };
-
-    let currentFees = null;
-    let selectedPriority = 'halfHourFee';
-    let selectedSize = 'normal';
-
-    async function fetchFees() {
-      document.getElementById('fee-cards').innerHTML = '<div class="fee-loading">Cargando fees del mempool...</div>';
-      try {
-        const res = await fetch('https://mempool.space/api/v1/fees/recommended');
-        if (!res.ok) throw new Error('API error');
-        currentFees = await res.json();
-
-        // Also fetch mempool info
-        try {
-          const mRes = await fetch('https://mempool.space/api/mempool');
-          const mempool = await mRes.json();
-          document.getElementById('mempool-count').textContent = mempool.count.toLocaleString('es-ES');
-          document.getElementById('mempool-size').textContent = (mempool.vsize / 1000000).toFixed(2) + ' MvB';
-          document.getElementById('mempool-fees').textContent = (mempool.total_fee / 100000000).toFixed(4) + ' BTC';
-        } catch(e) {
-          console.warn('Mempool info unavailable');
-        }
-
-        renderFees();
-        updateCost();
-        document.getElementById('last-update').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-ES');
-      } catch (e) {
-        document.getElementById('fee-cards').innerHTML = '<div class="fee-loading">Error al obtener datos. <button class="refresh-fees" onclick="fetchFees()">Reintentar</button></div>';
-      }
-    }
-
-    function renderFees() {
-      const priorities = [
-        { key: 'fastestFee', label: '🚀 Prioridad alta', time: '~10 min (próximo bloque)' },
-        { key: 'halfHourFee', label: '⚡ Media hora', time: '~30 min (3 bloques)' },
-        { key: 'hourFee', label: '🕐 Una hora', time: '~60 min (6 bloques)' },
-        { key: 'economyFee', label: '🐌 Económica', time: 'Sin prisa' },
-        { key: 'minimumFee', label: '💤 Mínima', time: 'Cuando se pueda' }
-      ];
-
-      let html = '';
-      priorities.forEach(p => {
-        const rate = currentFees[p.key];
-        if (rate === undefined) return;
-        html += `
-          <div class="fee-card ${selectedPriority === p.key ? 'selected' : ''}" data-priority="${p.key}" onclick="selectPriority('${p.key}')">
-            <div class="fee-left">
-              <span class="fee-priority">${p.label}</span>
-              <span class="fee-time">${p.time}</span>
-            </div>
-            <div class="fee-right">
-              <span class="fee-rate">${rate}</span>
-              <span class="fee-unit">sat/vB</span>
-            </div>
-          </div>
-        `;
-      });
-      document.getElementById('fee-cards').innerHTML = html;
-    }
-
-    function selectPriority(key) {
-      selectedPriority = key;
-      renderFees();
-      updateCost();
-    }
-
-    function selectSize(key) {
-      selectedSize = key;
-      document.querySelectorAll('.size-opt').forEach(el => {
-        el.classList.toggle('active', el.dataset.size === key);
-      });
-      updateCost();
-    }
-
-    function updateCost() {
-      if (!currentFees) return;
-      const rate = currentFees[selectedPriority];
-      const size = TX_SIZES[selectedSize].vB;
-      const costSats = rate * size;
-      const btcPrice = getBtcPrice();
-      const costEur = btcPrice ? (costSats / 100000000) * btcPrice : null;
-
-      document.getElementById('cost-sats').textContent = costSats.toLocaleString('es-ES') + ' sats';
-      document.getElementById('cost-eur').textContent = costEur ? '≈ ' + costEur.toFixed(2) + ' €' : '';
-      document.getElementById('cost-rate').textContent = rate + ' sat/vB × ' + size + ' vB';
-    }
-
-    // Init size buttons
-    document.querySelectorAll('.size-opt').forEach(el => {
-      el.addEventListener('click', () => selectSize(el.dataset.size));
-    });
-
-    // Custom size input
-    document.getElementById('custom-vb').addEventListener('input', (e) => {
-      const val = parseInt(e.target.value);
-      if (val > 0) {
-        TX_SIZES['custom'] = { vB: val, label: 'Custom', desc: '' };
-        selectedSize = 'custom';
-        document.querySelectorAll('.size-opt').forEach(el => el.classList.remove('active'));
-        updateCost();
-      }
-    });
-
-    // Auto-refresh every 30s
-    fetchFees();
-    setInterval(fetchFees, 30000);
-    initPriceUpdates();
-
-    // Update cost when BTC price changes
-    window.addEventListener('btcPriceUpdated', updateCost);
-  </script>
----
-
-    <div class="hero-text">
+<div class="hero-text">
       <h2>Fees <span class="accent">Bitcoin</span> en tiempo real</h2>
       <p>Consulta las comisiones actuales de la red y calcula el coste de tu transacción.</p>
     </div>
@@ -383,7 +263,125 @@ Fees Calculator ---
   <script src="/js/main.js"></script>
 
 <script>
-    //
+    // --- Fees Calculator ---
+    // Typical transaction sizes in virtual bytes (vB)
+    const TX_SIZES = {
+      'simple':    { vB: 140, label: 'Simple (1→1)', desc: '1 input, 1 output (SegWit)' },
+      'normal':    { vB: 225, label: 'Normal (1→2)', desc: '1 input, 2 outputs (pago + cambio)' },
+      'consolidar': { vB: 400, label: 'Consolidar (3→1)', desc: '3 inputs, 1 output' },
+      'compleja':  { vB: 600, label: 'Compleja (5→2)', desc: '5 inputs, 2 outputs' }
+    };
+
+    let currentFees = null;
+    let selectedPriority = 'halfHourFee';
+    let selectedSize = 'normal';
+
+    async function fetchFees() {
+      document.getElementById('fee-cards').innerHTML = '<div class="fee-loading">Cargando fees del mempool...</div>';
+      try {
+        const res = await fetch('https://mempool.space/api/v1/fees/recommended');
+        if (!res.ok) throw new Error('API error');
+        currentFees = await res.json();
+
+        // Also fetch mempool info
+        try {
+          const mRes = await fetch('https://mempool.space/api/mempool');
+          const mempool = await mRes.json();
+          document.getElementById('mempool-count').textContent = mempool.count.toLocaleString('es-ES');
+          document.getElementById('mempool-size').textContent = (mempool.vsize / 1000000).toFixed(2) + ' MvB';
+          document.getElementById('mempool-fees').textContent = (mempool.total_fee / 100000000).toFixed(4) + ' BTC';
+        } catch(e) {
+          console.warn('Mempool info unavailable');
+        }
+
+        renderFees();
+        updateCost();
+        document.getElementById('last-update').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-ES');
+      } catch (e) {
+        document.getElementById('fee-cards').innerHTML = '<div class="fee-loading">Error al obtener datos. <button class="refresh-fees" onclick="fetchFees()">Reintentar</button></div>';
+      }
+    }
+
+    function renderFees() {
+      const priorities = [
+        { key: 'fastestFee', label: '🚀 Prioridad alta', time: '~10 min (próximo bloque)' },
+        { key: 'halfHourFee', label: '⚡ Media hora', time: '~30 min (3 bloques)' },
+        { key: 'hourFee', label: '🕐 Una hora', time: '~60 min (6 bloques)' },
+        { key: 'economyFee', label: '🐌 Económica', time: 'Sin prisa' },
+        { key: 'minimumFee', label: '💤 Mínima', time: 'Cuando se pueda' }
+      ];
+
+      let html = '';
+      priorities.forEach(p => {
+        const rate = currentFees[p.key];
+        if (rate === undefined) return;
+        html += `
+          <div class="fee-card ${selectedPriority === p.key ? 'selected' : ''}" data-priority="${p.key}" onclick="selectPriority('${p.key}')">
+            <div class="fee-left">
+              <span class="fee-priority">${p.label}</span>
+              <span class="fee-time">${p.time}</span>
+            </div>
+            <div class="fee-right">
+              <span class="fee-rate">${rate}</span>
+              <span class="fee-unit">sat/vB</span>
+            </div>
+          </div>
+        `;
+      });
+      document.getElementById('fee-cards').innerHTML = html;
+    }
+
+    function selectPriority(key) {
+      selectedPriority = key;
+      renderFees();
+      updateCost();
+    }
+
+    function selectSize(key) {
+      selectedSize = key;
+      document.querySelectorAll('.size-opt').forEach(el => {
+        el.classList.toggle('active', el.dataset.size === key);
+      });
+      updateCost();
+    }
+
+    function updateCost() {
+      if (!currentFees) return;
+      const rate = currentFees[selectedPriority];
+      const size = TX_SIZES[selectedSize].vB;
+      const costSats = rate * size;
+      const btcPrice = getBtcPrice();
+      const costEur = btcPrice ? (costSats / 100000000) * btcPrice : null;
+
+      document.getElementById('cost-sats').textContent = costSats.toLocaleString('es-ES') + ' sats';
+      document.getElementById('cost-eur').textContent = costEur ? '≈ ' + costEur.toFixed(2) + ' €' : '';
+      document.getElementById('cost-rate').textContent = rate + ' sat/vB × ' + size + ' vB';
+    }
+
+    // Init size buttons
+    document.querySelectorAll('.size-opt').forEach(el => {
+      el.addEventListener('click', () => selectSize(el.dataset.size));
+    });
+
+    // Custom size input
+    document.getElementById('custom-vb').addEventListener('input', (e) => {
+      const val = parseInt(e.target.value);
+      if (val > 0) {
+        TX_SIZES['custom'] = { vB: val, label: 'Custom', desc: '' };
+        selectedSize = 'custom';
+        document.querySelectorAll('.size-opt').forEach(el => el.classList.remove('active'));
+        updateCost();
+      }
+    });
+
+    // Auto-refresh every 30s
+    fetchFees();
+    setInterval(fetchFees, 30000);
+    initPriceUpdates();
+
+    // Update cost when BTC price changes
+    window.addEventListener('btcPriceUpdated', updateCost);
+  </script>
 
 </body>
 </html>

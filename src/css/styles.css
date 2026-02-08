@@ -39,7 +39,7 @@ body {
   left: 0;
   right: 0;
   z-index: 100;
-  background: var(--surface);
+  background: rgba(20, 20, 20, 0.95);
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -65,27 +65,24 @@ body {
 .nav-brand:hover { color: var(--accent); }
 .nav-brand .btc-logo { width: 28px; height: 28px; }
 .nav-brand span { font-size: 0.9375rem; font-weight: 500; }
-.nav-subtitle { font-size: 0.75rem; color: var(--text-secondary); display: none; }
+.nav-subtitle { font-size: 0.75rem; color: var(--text-secondary); }
 .nav-hamburger {
   display: none;
   background: none;
-  border: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
   color: var(--text);
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 6px 10px;
+  line-height: 1;
 }
 
 /* --- Container --- */
-.container { max-width: 600px; margin: 0 auto; padding: 24px 24px 80px; }
+.container { max-width: 600px; margin: 0 auto; padding: 100px 24px 80px; }
 
 /* Hide old header (now in nav bar) */
-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
-.btc-logo { width: 36px; height: 36px; flex-shrink: 0; }
-.header-text h1 { font-size: 1.125rem; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 2px; }
-.header-text h1 a { color: inherit; text-decoration: none; }
-.header-text h1 a:hover { color: var(--accent); }
-.subtitle { font-size: 0.875rem; color: var(--text-secondary); }
+header { display: none; }
 
 .hero-text { margin-bottom: 48px; }
 .hero-text h2 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1.3; margin-bottom: 8px; }
@@ -208,17 +205,40 @@ footer a:hover { text-decoration: underline; }
 .article-meta { font-size: 0.8125rem; color: var(--text-secondary); margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
 
 /* --- Responsive --- */
+
+/* Desktop: nav links visible as horizontal bar */
 @media (min-width: 769px) {
-  .nav-subtitle { display: inline; margin-left: 8px; }
+  .nav-hamburger { display: none !important; }
+  .nav-calculadoras { display: flex !important; }
 }
 
+/* Mobile: hamburger menu */
 @media (max-width: 768px) {
-  .container { padding: 16px 20px 60px; }
-  .nav-link { font-size: 0.75rem; padding: 5px 10px; }
+  .nav-hamburger { display: block; }
+  .nav-subtitle { display: none; }
+  .container { padding: 72px 20px 60px; }
+
+  .nav-calculadoras {
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 0 12px;
+    overflow: visible;
+    border-top: 1px solid var(--border);
+  }
+  .nav-calculadoras.open { display: flex; }
+  .nav-link {
+    padding: 10px 14px;
+    font-size: 0.875rem;
+    border-radius: 8px;
+  }
+  .nav-link:hover, .nav-link.active {
+    background: var(--accent-dim);
+  }
 }
 
 @media (max-width: 480px) {
-  .container { padding: 12px 16px 60px; }
+  .container { padding: 72px 16px 60px; }
   .cta-row { flex-direction: column; }
   .cta-link { max-width: 100%; }
   .projection-amount { font-size: 1.75rem; }

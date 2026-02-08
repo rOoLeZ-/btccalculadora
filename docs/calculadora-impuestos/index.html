@@ -131,6 +131,7 @@
           <span>Bitcoin Calculadora</span>
           <span class="nav-subtitle">Calculadora de impuestos crypto</span>
         </a>
+        <button class="nav-hamburger" onclick="document.querySelector('.nav-calculadoras').classList.toggle('open');this.textContent=this.textContent==='☰'?'✕':'☰'" aria-label="Menú">☰</button>
       </div>
     <!-- Navegación entre calculadoras -->
     <nav class="nav-calculadoras" aria-label="Calculadoras disponibles">
@@ -150,196 +151,7 @@
 
   <main class="container">
 
-Mode switch ---
-    document.querySelectorAll('.switch-mode button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.switch-mode button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        mode = btn.dataset.mode;
-        document.getElementById('simple-mode').style.display = mode === 'simple' ? 'block' : 'none';
-        document.getElementById('advanced-mode').style.display = mode === 'advanced' ? 'block' : 'none';
-      });
-    });
-
-    // --- Simple mode ---
-    document.getElementById('calc-simple').addEventListener('click', () => {
-      const gain = parseFloat(document.getElementById('simple-gain').value);
-      const losses = parseFloat(document.getElementById('simple-losses').value) || 0;
-      if (isNaN(gain)) {
-        document.getElementById('simple-error').textContent = 'Introduce una ganancia válida.';
-        document.getElementById('simple-error').style.display = 'block';
-        return;
-      }
-      document.getElementById('simple-error').style.display = 'none';
-      const netGain = gain - Math.abs(losses);
-      displayResults(netGain, Math.abs(losses));
-    });
-
-    // --- Advanced mode: multiple operations ---
-    function addOperation() {
-      opCounter++;
-      const div = document.createElement('div');
-      div.className = 'operation-row';
-      div.id = `op-${opCounter}`;
-      div.innerHTML = `
-        <div>
-          <label class="input-label">Precio compra (€)</label>
-          <div class="input-wrapper" style="margin-bottom:0">
-            <input type="number" class="op-buy" placeholder="10.000" min="0" step="100">
-          </div>
-        </div>
-        <div>
-          <label class="input-label">Precio venta (€)</label>
-          <div class="input-wrapper" style="margin-bottom:0">
-            <input type="number" class="op-sell" placeholder="25.000" min="0" step="100">
-          </div>
-        </div>
-        <button class="remove-op" onclick="this.parentElement.remove()">✕ Eliminar</button>
-      `;
-      document.getElementById('operations-list').appendChild(div);
-    }
-
-    document.getElementById('add-op').addEventListener('click', addOperation);
-
-    document.getElementById('calc-advanced').addEventListener('click', () => {
-      const rows = document.querySelectorAll('.operation-row');
-      let totalGain = 0;
-      let totalLoss = 0;
-      rows.forEach(row => {
-        const buy = parseFloat(row.querySelector('.op-buy').value) || 0;
-        const sell = parseFloat(row.querySelector('.op-sell').value) || 0;
-        const diff = sell - buy;
-        if (diff > 0) totalGain += diff;
-        else totalLoss += Math.abs(diff);
-      });
-      const netGain = totalGain - totalLoss;
-      displayResults(netGain, totalLoss);
-    });
-
-    // --- Tax calculation engine ---
-    function calculateTax(baseImponible) {
-      if (baseImponible <= 0) return { total: 0, breakdown: [], effectiveRate: 0 };
-
-      let remaining = baseImponible;
-      let totalTax = 0;
-      let prevLimit = 0;
-      const breakdown = [];
-
-      for (const tramo of TRAMOS_AHORRO_2025) {
-        const tramoSize = tramo.hasta - prevLimit;
-        const taxable = Math.min(remaining, tramoSize);
-        if (taxable <= 0) break;
-        const taxAmount = taxable * tramo.tipo;
-        totalTax += taxAmount;
-        breakdown.push({
-          desde: prevLimit,
-          hasta: Math.min(tramo.hasta, prevLimit + taxable),
-          tipo: tramo.tipo,
-          base: taxable,
-          cuota: taxAmount
-        });
-        remaining -= taxable;
-        prevLimit = tramo.hasta;
-      }
-
-      return {
-        total: totalTax,
-        breakdown: breakdown,
-        effectiveRate: (totalTax / baseImponible) * 100
-      };
-    }
-
-    function displayResults(netGain, losses) {
-      const resultsDiv = document.getElementById('tax-results');
-
-      if (netGain <= 0) {
-        document.getElementById('tax-summary').innerHTML = `
-          <p style="font-size:1.125rem;font-weight:500;">No tienes que pagar impuestos</p>
-          <p class="loss-info">Tienes pérdidas netas de <strong class="negative">${formatEur(Math.abs(netGain))}</strong>.</p>
-          <div class="info-box">
-            <strong>💡 Compensación de pérdidas:</strong> Puedes compensar estas pérdidas con ganancias patrimoniales de los próximos <strong>4 años</strong>. También puedes compensar hasta un <strong>25%</strong> con rendimientos del capital mobiliario (intereses, dividendos). Art. 49 Ley IRPF.
-          </div>
-        `;
-        document.getElementById('tax-breakdown').innerHTML = '';
-        document.getElementById('tax-tramos-applied').innerHTML = '';
-        resultsDiv.style.display = 'block';
-        return;
-      }
-
-      const result = calculateTax(netGain);
-
-      // Summary
-      let summaryHtml = `
-        <div class="results" style="margin-bottom:16px;">
-          <div class="result-row">
-            <span class="result-label">Ganancia neta</span>
-            <span class="result-value positive">${formatEur(netGain)}</span>
-          </div>
-          ${losses > 0 ? `<div class="result-row">
-            <span class="result-label">Pérdidas compensadas</span>
-            <span class="result-value negative">-${formatEur(losses)}</span>
-          </div>` : ''}
-          <div class="result-row">
-            <span class="result-label">Impuestos a pagar</span>
-            <span class="result-value total-tax">${formatEur(result.total)}</span>
-          </div>
-          <div class="result-row">
-            <span class="result-label">Tipo efectivo</span>
-            <span class="result-value">${result.effectiveRate.toFixed(1)}%</span>
-          </div>
-          <div class="result-row">
-            <span class="result-label">Te quedas con</span>
-            <span class="result-value positive">${formatEur(netGain - result.total)}</span>
-          </div>
-        </div>
-      `;
-      document.getElementById('tax-summary').innerHTML = summaryHtml;
-
-      // Breakdown by tramos
-      let breakdownHtml = '<h4 style="font-size:0.9375rem;font-weight:500;margin:16px 0 8px;">Desglose por tramos</h4>';
-      result.breakdown.forEach(t => {
-        breakdownHtml += `
-          <div class="breakdown-item">
-            <span>${formatEur(t.desde)} — ${t.hasta === Infinity ? '∞' : formatEur(t.hasta)} (${(t.tipo*100)}%)</span>
-            <span>${formatEur(t.cuota)}</span>
-          </div>
-        `;
-      });
-      document.getElementById('tax-breakdown').innerHTML = breakdownHtml;
-
-      // Tramos table with highlighting
-      let tramosHtml = '<h4 style="font-size:0.9375rem;font-weight:500;margin:16px 0 8px;">Tramos base del ahorro IRPF 2025</h4>';
-      tramosHtml += '<table class="tramos-table"><tr><th>Base imponible</th><th>Tipo</th></tr>';
-      const tramosDisplay = [
-        { label: 'Hasta 6.000 €', tipo: '19%', limit: 6000 },
-        { label: '6.000 € — 50.000 €', tipo: '21%', limit: 50000 },
-        { label: '50.000 € — 200.000 €', tipo: '23%', limit: 200000 },
-        { label: '200.000 € — 300.000 €', tipo: '27%', limit: 300000 },
-        { label: 'Más de 300.000 €', tipo: '30%', limit: Infinity }
-      ];
-      tramosDisplay.forEach(t => {
-        const isActive = netGain > (t.limit === 6000 ? 0 : TRAMOS_AHORRO_2025[tramosDisplay.indexOf(t) - 1]?.hasta || 0);
-        tramosHtml += `<tr class="${isActive && netGain > 0 ? 'highlight-row' : ''}"><td>${t.label}</td><td>${t.tipo}</td></tr>`;
-      });
-      tramosHtml += '</table>';
-      document.getElementById('tax-tramos-applied').innerHTML = tramosHtml;
-
-      resultsDiv.style.display = 'block';
-
-      // Share
-      document.getElementById('share-tax').onclick = () => {
-        const text = `Mis ganancias crypto: ${formatEur(netGain)}\nImpuestos: ${formatEur(result.total)} (tipo efectivo ${result.effectiveRate.toFixed(1)}%)\n\nCalcula los tuyos:`;
-        shareOnTwitter(text, 'https://bitcoincalculadora.com/calculadora-impuestos/');
-      };
-    }
-
-    // Add initial operation in advanced mode
-    addOperation();
-    initPriceUpdates();
-  </script>
----
-
-    <div class="hero-text">
+<div class="hero-text">
       <h2>Calculadora de <span class="accent">impuestos crypto</span> España</h2>
       <p>Estima cuánto pagarás a Hacienda por tus ganancias en Bitcoin y criptomonedas.</p>
     </div>
@@ -546,7 +358,193 @@ Mode switch ---
     let operations = [];
     let opCounter = 0;
 
-    //
+    // --- Mode switch ---
+    document.querySelectorAll('.switch-mode button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.switch-mode button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        mode = btn.dataset.mode;
+        document.getElementById('simple-mode').style.display = mode === 'simple' ? 'block' : 'none';
+        document.getElementById('advanced-mode').style.display = mode === 'advanced' ? 'block' : 'none';
+      });
+    });
+
+    // --- Simple mode ---
+    document.getElementById('calc-simple').addEventListener('click', () => {
+      const gain = parseFloat(document.getElementById('simple-gain').value);
+      const losses = parseFloat(document.getElementById('simple-losses').value) || 0;
+      if (isNaN(gain)) {
+        document.getElementById('simple-error').textContent = 'Introduce una ganancia válida.';
+        document.getElementById('simple-error').style.display = 'block';
+        return;
+      }
+      document.getElementById('simple-error').style.display = 'none';
+      const netGain = gain - Math.abs(losses);
+      displayResults(netGain, Math.abs(losses));
+    });
+
+    // --- Advanced mode: multiple operations ---
+    function addOperation() {
+      opCounter++;
+      const div = document.createElement('div');
+      div.className = 'operation-row';
+      div.id = `op-${opCounter}`;
+      div.innerHTML = `
+        <div>
+          <label class="input-label">Precio compra (€)</label>
+          <div class="input-wrapper" style="margin-bottom:0">
+            <input type="number" class="op-buy" placeholder="10.000" min="0" step="100">
+          </div>
+        </div>
+        <div>
+          <label class="input-label">Precio venta (€)</label>
+          <div class="input-wrapper" style="margin-bottom:0">
+            <input type="number" class="op-sell" placeholder="25.000" min="0" step="100">
+          </div>
+        </div>
+        <button class="remove-op" onclick="this.parentElement.remove()">✕ Eliminar</button>
+      `;
+      document.getElementById('operations-list').appendChild(div);
+    }
+
+    document.getElementById('add-op').addEventListener('click', addOperation);
+
+    document.getElementById('calc-advanced').addEventListener('click', () => {
+      const rows = document.querySelectorAll('.operation-row');
+      let totalGain = 0;
+      let totalLoss = 0;
+      rows.forEach(row => {
+        const buy = parseFloat(row.querySelector('.op-buy').value) || 0;
+        const sell = parseFloat(row.querySelector('.op-sell').value) || 0;
+        const diff = sell - buy;
+        if (diff > 0) totalGain += diff;
+        else totalLoss += Math.abs(diff);
+      });
+      const netGain = totalGain - totalLoss;
+      displayResults(netGain, totalLoss);
+    });
+
+    // --- Tax calculation engine ---
+    function calculateTax(baseImponible) {
+      if (baseImponible <= 0) return { total: 0, breakdown: [], effectiveRate: 0 };
+
+      let remaining = baseImponible;
+      let totalTax = 0;
+      let prevLimit = 0;
+      const breakdown = [];
+
+      for (const tramo of TRAMOS_AHORRO_2025) {
+        const tramoSize = tramo.hasta - prevLimit;
+        const taxable = Math.min(remaining, tramoSize);
+        if (taxable <= 0) break;
+        const taxAmount = taxable * tramo.tipo;
+        totalTax += taxAmount;
+        breakdown.push({
+          desde: prevLimit,
+          hasta: Math.min(tramo.hasta, prevLimit + taxable),
+          tipo: tramo.tipo,
+          base: taxable,
+          cuota: taxAmount
+        });
+        remaining -= taxable;
+        prevLimit = tramo.hasta;
+      }
+
+      return {
+        total: totalTax,
+        breakdown: breakdown,
+        effectiveRate: (totalTax / baseImponible) * 100
+      };
+    }
+
+    function displayResults(netGain, losses) {
+      const resultsDiv = document.getElementById('tax-results');
+
+      if (netGain <= 0) {
+        document.getElementById('tax-summary').innerHTML = `
+          <p style="font-size:1.125rem;font-weight:500;">No tienes que pagar impuestos</p>
+          <p class="loss-info">Tienes pérdidas netas de <strong class="negative">${formatEur(Math.abs(netGain))}</strong>.</p>
+          <div class="info-box">
+            <strong>💡 Compensación de pérdidas:</strong> Puedes compensar estas pérdidas con ganancias patrimoniales de los próximos <strong>4 años</strong>. También puedes compensar hasta un <strong>25%</strong> con rendimientos del capital mobiliario (intereses, dividendos). Art. 49 Ley IRPF.
+          </div>
+        `;
+        document.getElementById('tax-breakdown').innerHTML = '';
+        document.getElementById('tax-tramos-applied').innerHTML = '';
+        resultsDiv.style.display = 'block';
+        return;
+      }
+
+      const result = calculateTax(netGain);
+
+      // Summary
+      let summaryHtml = `
+        <div class="results" style="margin-bottom:16px;">
+          <div class="result-row">
+            <span class="result-label">Ganancia neta</span>
+            <span class="result-value positive">${formatEur(netGain)}</span>
+          </div>
+          ${losses > 0 ? `<div class="result-row">
+            <span class="result-label">Pérdidas compensadas</span>
+            <span class="result-value negative">-${formatEur(losses)}</span>
+          </div>` : ''}
+          <div class="result-row">
+            <span class="result-label">Impuestos a pagar</span>
+            <span class="result-value total-tax">${formatEur(result.total)}</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Tipo efectivo</span>
+            <span class="result-value">${result.effectiveRate.toFixed(1)}%</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Te quedas con</span>
+            <span class="result-value positive">${formatEur(netGain - result.total)}</span>
+          </div>
+        </div>
+      `;
+      document.getElementById('tax-summary').innerHTML = summaryHtml;
+
+      // Breakdown by tramos
+      let breakdownHtml = '<h4 style="font-size:0.9375rem;font-weight:500;margin:16px 0 8px;">Desglose por tramos</h4>';
+      result.breakdown.forEach(t => {
+        breakdownHtml += `
+          <div class="breakdown-item">
+            <span>${formatEur(t.desde)} — ${t.hasta === Infinity ? '∞' : formatEur(t.hasta)} (${(t.tipo*100)}%)</span>
+            <span>${formatEur(t.cuota)}</span>
+          </div>
+        `;
+      });
+      document.getElementById('tax-breakdown').innerHTML = breakdownHtml;
+
+      // Tramos table with highlighting
+      let tramosHtml = '<h4 style="font-size:0.9375rem;font-weight:500;margin:16px 0 8px;">Tramos base del ahorro IRPF 2025</h4>';
+      tramosHtml += '<table class="tramos-table"><tr><th>Base imponible</th><th>Tipo</th></tr>';
+      const tramosDisplay = [
+        { label: 'Hasta 6.000 €', tipo: '19%', limit: 6000 },
+        { label: '6.000 € — 50.000 €', tipo: '21%', limit: 50000 },
+        { label: '50.000 € — 200.000 €', tipo: '23%', limit: 200000 },
+        { label: '200.000 € — 300.000 €', tipo: '27%', limit: 300000 },
+        { label: 'Más de 300.000 €', tipo: '30%', limit: Infinity }
+      ];
+      tramosDisplay.forEach(t => {
+        const isActive = netGain > (t.limit === 6000 ? 0 : TRAMOS_AHORRO_2025[tramosDisplay.indexOf(t) - 1]?.hasta || 0);
+        tramosHtml += `<tr class="${isActive && netGain > 0 ? 'highlight-row' : ''}"><td>${t.label}</td><td>${t.tipo}</td></tr>`;
+      });
+      tramosHtml += '</table>';
+      document.getElementById('tax-tramos-applied').innerHTML = tramosHtml;
+
+      resultsDiv.style.display = 'block';
+
+      // Share
+      document.getElementById('share-tax').onclick = () => {
+        const text = `Mis ganancias crypto: ${formatEur(netGain)}\nImpuestos: ${formatEur(result.total)} (tipo efectivo ${result.effectiveRate.toFixed(1)}%)\n\nCalcula los tuyos:`;
+        shareOnTwitter(text, 'https://bitcoincalculadora.com/calculadora-impuestos/');
+      };
+    }
+
+    // Add initial operation in advanced mode
+    addOperation();
+    initPriceUpdates();
+  </script>
 
 </body>
 </html>
