@@ -7,7 +7,7 @@
   <!-- SEO Primary Meta Tags -->
   <title>Calculadora Compra/Venta Bitcoin - Beneficio en USDT | 2026</title>
   <meta name="title" content="Calculadora Compra/Venta Bitcoin - Beneficio en USDT | 2026">
-  <meta name="description" content="Calcula cuánto ganas o pierdes al comprar Bitcoin con USDT y venderlo a otro precio. Simula ventas totales o parciales en segundos.">
+  <meta name="description" content="Calcula cuánto ganas o pierdes al comprar Bitcoin con USDT y venderlo a otro precio. Simula una o dos operaciones encadenadas en segundos.">
   <meta name="keywords" content="calculadora compra venta bitcoin, beneficio bitcoin usdt, vender btc usdt, calculadora pnl bitcoin, rentabilidad bitcoin">
   <meta name="author" content="Bitcoin Calculadora">
   <meta name="robots" content="index, follow">
@@ -17,7 +17,7 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://bitcoincalculadora.com/calculadora-compra-venta/">
   <meta property="og:title" content="Calculadora Compra/Venta Bitcoin - Beneficio en USDT">
-  <meta property="og:description" content="Descubre tu beneficio o pérdida al vender BTC a otro precio. Soporta ventas parciales y cálculo inmediato.">
+  <meta property="og:description" content="Descubre tu beneficio o pérdida al vender BTC a otro precio y encadena una segunda operación con los USDT obtenidos.">
   <meta property="og:image" content="https://bitcoincalculadora.com/assets/og-image.png">
   <meta property="og:locale" content="es_ES">
   <meta property="og:site_name" content="Bitcoin Calculadora">
@@ -26,7 +26,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://bitcoincalculadora.com/calculadora-compra-venta/">
   <meta name="twitter:title" content="Calculadora Compra/Venta Bitcoin - Beneficio en USDT">
-  <meta name="twitter:description" content="Descubre tu beneficio o pérdida al vender BTC a otro precio. Soporta ventas parciales y cálculo inmediato.">
+  <meta name="twitter:description" content="Descubre tu beneficio o pérdida al vender BTC a otro precio y encadena una segunda operación con los USDT obtenidos.">
   <meta name="twitter:image" content="https://bitcoincalculadora.com/assets/og-image.png">
 
   
@@ -35,7 +35,7 @@
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Calculadora Compra/Venta Bitcoin",
-    "description": "Calculadora para estimar beneficio o pérdida al comprar y vender Bitcoin con USDT",
+    "description": "Calculadora para estimar beneficio o pérdida al comprar y vender Bitcoin con USDT en una o dos operaciones",
     "url": "https://bitcoincalculadora.com/calculadora-compra-venta/",
     "applicationCategory": "FinanceApplication",
     "operatingSystem": "Web",
@@ -117,7 +117,7 @@
 
 <div class="hero-text">
       <h2>Calcula tu beneficio al <span class="accent">comprar y vender Bitcoin</span></h2>
-      <p>Introduce tu compra en USDT y simula cuánto ganarías o perderías al vender tu BTC a otro precio.</p>
+      <p>Introduce tu compra en USDT, simula la venta y encadena una segunda operación con los USDT obtenidos.</p>
     </div>
 
     <section aria-label="Datos de compra">
@@ -143,7 +143,7 @@
       </div>
     </section>
 
-    <section class="projection" aria-label="Datos de venta">
+    <section class="projection" aria-label="Primera venta">
       <h2 class="projection-header">Simula la venta</h2>
 
       <div id="sale-warning" class="warning-note"></div>
@@ -167,7 +167,7 @@
         </div>
       </div>
 
-      <div class="results" aria-label="Resultados de venta">
+      <div class="results" aria-label="Resultados de la primera venta">
         <div class="result-row">
           <span class="result-label">Valor final en USDT</span>
           <span class="result-value highlight" id="final-usdt" aria-live="polite">—</span>
@@ -186,8 +186,84 @@
         </div>
       </div>
 
-      <p class="status-note" id="sale-context">El beneficio se calcula sobre el coste de adquisición del BTC que vas a vender.</p>
+      <p class="status-note" id="sale-context">El beneficio se calcula sobre el capital inicial asociado al BTC que vas a vender.</p>
       <p class="status-note">Sin comisiones, la rentabilidad en % coincide con el cambio del precio de BTC.</p>
+    </section>
+
+    <section class="projection" aria-label="Segunda operación">
+      <h2 class="projection-header">Vuelve a comprar y vender</h2>
+
+      <div class="results" style="margin-bottom:24px;" aria-label="Capital para la segunda operación">
+        <div class="result-row">
+          <span class="result-label">USDT disponibles tras la primera venta</span>
+          <span class="result-value highlight" id="reinvest-usdt" aria-live="polite">—</span>
+        </div>
+      </div>
+
+      <div id="second-sale-warning" class="warning-note"></div>
+
+      <div class="input-group compact-group">
+        <label class="input-label" for="rebuy-price">Nuevo precio de compra de BTC</label>
+        <div class="input-wrapper">
+          <input type="number" id="rebuy-price" value="76000" min="0" step="0.01" placeholder="76000">
+        </div>
+      </div>
+
+      <div class="results" style="margin-bottom:24px;" aria-label="Resultado de la segunda compra">
+        <div class="result-row">
+          <span class="result-label">BTC obtenidos en la recompra</span>
+          <span class="result-value highlight" id="rebuy-btc-obtained" aria-live="polite">—</span>
+        </div>
+      </div>
+
+      <div class="input-group compact-group">
+        <label class="input-label" for="rebuy-btc-to-sell">BTC a vender en la segunda operación</label>
+        <div class="input-wrapper">
+          <input type="number" id="rebuy-btc-to-sell" min="0" step="0.00000001" placeholder="0.00000000">
+        </div>
+      </div>
+
+      <div class="helper-row">
+        <p class="helper-text">Máximo disponible: <span id="rebuy-btc-available">—</span></p>
+        <button class="mini-btn" id="second-sell-all-btn" type="button">Vender todo</button>
+      </div>
+
+      <div class="input-group compact-group">
+        <label class="input-label" for="second-sell-price">Nuevo precio de venta de BTC</label>
+        <div class="input-wrapper">
+          <input type="number" id="second-sell-price" value="92000" min="0" step="0.01" placeholder="92000">
+        </div>
+      </div>
+
+      <div class="results" aria-label="Resultados de la segunda operación">
+        <div class="result-row">
+          <span class="result-label">Valor final en USDT</span>
+          <span class="result-value highlight" id="second-final-usdt" aria-live="polite">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Beneficio / pérdida de esta operación</span>
+          <span class="result-value" id="second-profit-usdt" aria-live="polite">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Rentabilidad de esta operación</span>
+          <span class="result-value" id="second-return-pct" aria-live="polite">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Cambio del precio de BTC en esta operación</span>
+          <span class="result-value" id="second-price-change-pct" aria-live="polite">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Beneficio / pérdida acumulado</span>
+          <span class="result-value" id="cumulative-profit-usdt" aria-live="polite">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Rentabilidad acumulada</span>
+          <span class="result-value" id="cumulative-return-pct" aria-live="polite">—</span>
+        </div>
+      </div>
+
+      <p class="status-note" id="chain-context">La segunda operación reutiliza automáticamente los USDT obtenidos en la primera venta.</p>
+      <p class="status-note">La comparación acumulada toma como base el capital inicial asociado al BTC vendido en la primera operación.</p>
     </section>
 
     <section class="share-section">
@@ -246,16 +322,20 @@
     <section class="faq-section">
       <h2>Preguntas frecuentes</h2>
       <article class="faq-item">
-        <h3>¿El beneficio se calcula sobre toda la compra o solo sobre lo que vendo?</h3>
-        <p>Sobre el BTC que vendes. Si compraste 0,02 BTC pero solo vendes 0,01 BTC, la calculadora usa únicamente el coste proporcional de ese 0,01 BTC para calcular tu ganancia o pérdida.</p>
+        <h3>¿Por qué ya no aparece el aviso si vendo exactamente el BTC obtenido?</h3>
+        <p>La calculadora usa el mismo redondeo a 8 decimales para el BTC disponible y para el BTC que escribes al vender. Así se evita el falso aviso que aparecía por diferencias microscópicas de redondeo.</p>
       </article>
       <article class="faq-item">
-        <h3>¿Por qué la rentabilidad y el cambio de precio salen iguales?</h3>
-        <p>Porque esta versión no incluye comisiones ni deslizamiento. Si compras BTC a un precio y lo vendes a otro, el porcentaje de ganancia coincide con el cambio porcentual del precio.</p>
+        <h3>¿El beneficio se calcula sobre toda la compra o solo sobre lo que vendo?</h3>
+        <p>Sobre el BTC que vendes. Si compraste 0,02 BTC pero solo vendes 0,01 BTC, la calculadora usa únicamente el capital inicial asociado a ese 0,01 BTC para calcular la ganancia o pérdida.</p>
+      </article>
+      <article class="faq-item">
+        <h3>¿Cómo funciona la segunda operación?</h3>
+        <p>La segunda parte toma automáticamente los USDT obtenidos en la primera venta. Con ese importe puedes simular otra compra de BTC, otra venta y ver tanto el resultado de esa operación como el acumulado de toda la cadena.</p>
       </article>
       <article class="faq-item">
         <h3>¿Incluye fees o impuestos?</h3>
-        <p>No. El cálculo es bruto y solo usa precio de compra, cantidad de BTC vendida y precio de venta. Si quieres estimar impuestos, puedes usar también nuestra calculadora de impuestos.</p>
+        <p>No. El cálculo es bruto y solo usa precios y cantidades. Si quieres estimar impuestos, puedes usar también nuestra calculadora de impuestos.</p>
       </article>
     </section>
 
@@ -273,6 +353,8 @@
   <script src="/js/main.js"></script>
 
 <script>
+    const BTC_DECIMALS = 8;
+
     const usdtInvestedInput = document.getElementById('usdt-invested');
     const buyPriceInput = document.getElementById('buy-price');
     const btcObtainedOutput = document.getElementById('btc-obtained');
@@ -286,14 +368,36 @@
     const saleContextOutput = document.getElementById('sale-context');
     const saleWarningOutput = document.getElementById('sale-warning');
     const sellAllBtn = document.getElementById('sell-all-btn');
+
+    const reinvestUsdtOutput = document.getElementById('reinvest-usdt');
+    const rebuyPriceInput = document.getElementById('rebuy-price');
+    const rebuyBtcObtainedOutput = document.getElementById('rebuy-btc-obtained');
+    const rebuyBtcAvailableOutput = document.getElementById('rebuy-btc-available');
+    const rebuyBtcToSellInput = document.getElementById('rebuy-btc-to-sell');
+    const secondSellPriceInput = document.getElementById('second-sell-price');
+    const secondFinalUsdtOutput = document.getElementById('second-final-usdt');
+    const secondProfitOutput = document.getElementById('second-profit-usdt');
+    const secondReturnOutput = document.getElementById('second-return-pct');
+    const secondPriceChangeOutput = document.getElementById('second-price-change-pct');
+    const cumulativeProfitOutput = document.getElementById('cumulative-profit-usdt');
+    const cumulativeReturnOutput = document.getElementById('cumulative-return-pct');
+    const chainContextOutput = document.getElementById('chain-context');
+    const secondWarningOutput = document.getElementById('second-sale-warning');
+    const secondSellAllBtn = document.getElementById('second-sell-all-btn');
+
     const shareBtn = document.getElementById('share-btn-trade');
 
-    let tradeData = null;
-    let previousBtcObtained = 0;
-    let btcSellManuallyEdited = false;
+    const firstSellState = { edited: false, previousAvailable: 0 };
+    const secondSellState = { edited: false, previousAvailable: 0 };
 
-    function nearlyEqual(a, b, epsilon = 1e-8) {
+    let shareData = null;
+
+    function nearlyEqual(a, b, epsilon = 1e-10) {
       return Math.abs(a - b) <= epsilon * Math.max(1, Math.abs(a), Math.abs(b));
+    }
+
+    function roundBtc(value) {
+      return Number(value.toFixed(BTC_DECIMALS));
     }
 
     function formatUsdt(value) {
@@ -321,8 +425,8 @@
 
     function formatBtcAmount(value) {
       return value.toLocaleString('es-ES', {
-        minimumFractionDigits: 8,
-        maximumFractionDigits: 8
+        minimumFractionDigits: BTC_DECIMALS,
+        maximumFractionDigits: BTC_DECIMALS
       }) + ' BTC';
     }
 
@@ -336,121 +440,269 @@
       }
     }
 
-    function hideWarning() {
-      saleWarningOutput.style.display = 'none';
-      saleWarningOutput.textContent = '';
+    function resetValue(element, highlight = false) {
+      element.textContent = '—';
+      element.className = highlight ? 'result-value highlight' : 'result-value';
     }
 
-    function showWarning(message) {
-      saleWarningOutput.textContent = message;
-      saleWarningOutput.style.display = 'block';
+    function hideWarning(element) {
+      element.style.display = 'none';
+      element.textContent = '';
     }
 
-    function resetSaleResults() {
-      finalUsdtOutput.textContent = '—';
-      profitOutput.textContent = '—';
-      profitOutput.className = 'result-value';
-      returnOutput.textContent = '—';
-      returnOutput.className = 'result-value';
-      priceChangeOutput.textContent = '—';
-      priceChangeOutput.className = 'result-value';
-      saleContextOutput.textContent = 'El beneficio se calcula sobre el coste de adquisición del BTC que vas a vender.';
-      shareBtn.disabled = true;
-      tradeData = null;
+    function showWarning(element, message) {
+      element.textContent = message;
+      element.style.display = 'block';
     }
 
-    function syncSellAmount(btcObtained) {
-      const currentSellAmount = parseFloat(btcToSellInput.value) || 0;
-      const shouldAutoFill = !btcSellManuallyEdited || !currentSellAmount || nearlyEqual(currentSellAmount, previousBtcObtained);
+    function syncSellAmount(input, availableBtc, state) {
+      const currentAmount = parseFloat(input.value) || 0;
+      const shouldAutoFill = !state.edited || !currentAmount || nearlyEqual(currentAmount, state.previousAvailable);
       if (shouldAutoFill) {
-        btcToSellInput.value = btcObtained > 0 ? btcObtained.toFixed(8) : '';
-        btcSellManuallyEdited = false;
+        input.value = availableBtc > 0 ? availableBtc.toFixed(BTC_DECIMALS) : '';
+        state.edited = false;
       }
-      previousBtcObtained = btcObtained;
+      state.previousAvailable = availableBtc;
     }
 
-    function calculateTrade(options = {}) {
-      const syncSell = options.syncSell || false;
-      hideWarning();
+    function clampSellAmount(input, availableBtc, state, warningElement, message) {
+      let amount = parseFloat(input.value) || 0;
+      if (availableBtc > 0 && amount > availableBtc && !nearlyEqual(amount, availableBtc)) {
+        amount = availableBtc;
+        input.value = availableBtc.toFixed(BTC_DECIMALS);
+        state.edited = false;
+        showWarning(warningElement, message);
+      }
+      return amount;
+    }
+
+    function resetFirstSaleResults() {
+      resetValue(finalUsdtOutput, true);
+      resetValue(profitOutput);
+      resetValue(returnOutput);
+      resetValue(priceChangeOutput);
+      saleContextOutput.textContent = 'El beneficio se calcula sobre el capital inicial asociado al BTC que vas a vender.';
+    }
+
+    function resetSecondTradeResults(reinvestUsdt = 0) {
+      reinvestUsdtOutput.textContent = reinvestUsdt > 0 ? formatUsdt(reinvestUsdt) : '—';
+      rebuyBtcObtainedOutput.textContent = '—';
+      rebuyBtcAvailableOutput.textContent = '—';
+      rebuyBtcToSellInput.max = '';
+      secondSellAllBtn.disabled = reinvestUsdt <= 0;
+      resetValue(secondFinalUsdtOutput, true);
+      resetValue(secondProfitOutput);
+      resetValue(secondReturnOutput);
+      resetValue(secondPriceChangeOutput);
+      resetValue(cumulativeProfitOutput);
+      resetValue(cumulativeReturnOutput);
+      chainContextOutput.textContent = reinvestUsdt > 0
+        ? 'Introduce un nuevo precio de compra y otro de venta para encadenar una segunda operación.'
+        : 'La segunda operación reutiliza automáticamente los USDT obtenidos en la primera venta.';
+      hideWarning(secondWarningOutput);
+    }
+
+    function buildFirstShareData(firstTrade) {
+      return {
+        type: 'first',
+        invested: firstTrade.invested,
+        buyPrice: firstTrade.buyPrice,
+        sellPrice: firstTrade.sellPrice,
+        btcToSell: firstTrade.btcToSell,
+        finalUsdt: firstTrade.finalUsdt,
+        returnPct: firstTrade.returnPct
+      };
+    }
+
+    function buildChainShareData(secondTrade) {
+      return {
+        type: 'chain',
+        invested: secondTrade.cumulativeCostBasis,
+        firstBuyPrice: secondTrade.firstBuyPrice,
+        secondBuyPrice: secondTrade.rebuyPrice,
+        secondSellPrice: secondTrade.secondSellPrice,
+        finalUsdt: secondTrade.secondFinalUsdt,
+        cumulativeReturnPct: secondTrade.cumulativeReturnPct
+      };
+    }
+
+    function calculateSecondTrade(firstTrade) {
+      hideWarning(secondWarningOutput);
+
+      if (!firstTrade || !(firstTrade.finalUsdt > 0)) {
+        resetSecondTradeResults();
+        return;
+      }
+
+      const reinvestUsdt = firstTrade.finalUsdt;
+      reinvestUsdtOutput.textContent = formatUsdt(reinvestUsdt);
+
+      const rebuyPrice = parseFloat(rebuyPriceInput.value) || 0;
+      const secondSellPrice = parseFloat(secondSellPriceInput.value) || 0;
+      const secondBtcExact = reinvestUsdt > 0 && rebuyPrice > 0 ? reinvestUsdt / rebuyPrice : 0;
+      const secondBtcAvailable = secondBtcExact > 0 ? roundBtc(secondBtcExact) : 0;
+
+      rebuyBtcObtainedOutput.textContent = secondBtcAvailable > 0 ? formatBtcAmount(secondBtcAvailable) : '—';
+      rebuyBtcAvailableOutput.textContent = secondBtcAvailable > 0 ? formatBtcAmount(secondBtcAvailable) : '—';
+      rebuyBtcToSellInput.max = secondBtcAvailable > 0 ? secondBtcAvailable.toFixed(BTC_DECIMALS) : '';
+      secondSellAllBtn.disabled = secondBtcAvailable <= 0;
+
+      syncSellAmount(rebuyBtcToSellInput, secondBtcAvailable, secondSellState);
+
+      const secondBtcToSell = clampSellAmount(
+        rebuyBtcToSellInput,
+        secondBtcAvailable,
+        secondSellState,
+        secondWarningOutput,
+        'No puedes vender más BTC del que has obtenido en la segunda compra. He ajustado el valor al máximo disponible.'
+      );
+
+      if (!(secondBtcAvailable > 0) || !(secondBtcToSell > 0) || !(secondSellPrice > 0)) {
+        resetValue(secondFinalUsdtOutput, true);
+        resetValue(secondProfitOutput);
+        resetValue(secondReturnOutput);
+        resetValue(secondPriceChangeOutput);
+        resetValue(cumulativeProfitOutput);
+        resetValue(cumulativeReturnOutput);
+        chainContextOutput.textContent = 'Introduce un nuevo precio de compra y otro de venta para encadenar una segunda operación.';
+        return;
+      }
+
+      const secondSoldShare = secondBtcAvailable > 0 ? Math.min(1, secondBtcToSell / secondBtcAvailable) : 0;
+      const secondEffectiveBtcSold = secondBtcExact * secondSoldShare;
+      const secondCostBasis = reinvestUsdt * secondSoldShare;
+      const secondFinalUsdt = secondEffectiveBtcSold * secondSellPrice;
+      const secondProfit = secondFinalUsdt - secondCostBasis;
+      const secondReturnPct = secondCostBasis > 0 ? (secondProfit / secondCostBasis) * 100 : 0;
+      const secondPriceChangePct = rebuyPrice > 0 ? ((secondSellPrice / rebuyPrice) - 1) * 100 : 0;
+      const cumulativeCostBasis = firstTrade.soldCostBasis * secondSoldShare;
+      const cumulativeProfit = secondFinalUsdt - cumulativeCostBasis;
+      const cumulativeReturnPct = cumulativeCostBasis > 0 ? (cumulativeProfit / cumulativeCostBasis) * 100 : 0;
+      const secondRemainingBtc = Math.max(0, roundBtc(secondBtcAvailable - secondBtcToSell));
+
+      secondFinalUsdtOutput.textContent = formatUsdt(secondFinalUsdt);
+      setSignedValue(secondProfitOutput, secondProfit, formatSignedUsdt);
+      setSignedValue(secondReturnOutput, secondReturnPct, formatSignedPercent);
+      setSignedValue(secondPriceChangeOutput, secondPriceChangePct, formatSignedPercent);
+      setSignedValue(cumulativeProfitOutput, cumulativeProfit, formatSignedUsdt);
+      setSignedValue(cumulativeReturnOutput, cumulativeReturnPct, formatSignedPercent);
+
+      chainContextOutput.textContent = `Capital original asociado a esta segunda venta: ${formatUsdt(cumulativeCostBasis)} · BTC restantes tras la segunda venta: ${formatBtcAmount(secondRemainingBtc)}`;
+
+      shareData = buildChainShareData({
+        firstBuyPrice: firstTrade.buyPrice,
+        rebuyPrice,
+        secondSellPrice,
+        secondFinalUsdt,
+        cumulativeCostBasis,
+        cumulativeReturnPct
+      });
+    }
+
+    function calculateTradeChain() {
+      hideWarning(saleWarningOutput);
 
       const invested = parseFloat(usdtInvestedInput.value) || 0;
       const buyPrice = parseFloat(buyPriceInput.value) || 0;
       const sellPrice = parseFloat(sellPriceInput.value) || 0;
-      const btcObtained = invested > 0 && buyPrice > 0 ? invested / buyPrice : 0;
+      const btcObtainedExact = invested > 0 && buyPrice > 0 ? invested / buyPrice : 0;
+      const btcAvailable = btcObtainedExact > 0 ? roundBtc(btcObtainedExact) : 0;
 
-      btcObtainedOutput.textContent = btcObtained > 0 ? formatBtcAmount(btcObtained) : '—';
-      btcAvailableOutput.textContent = btcObtained > 0 ? formatBtcAmount(btcObtained) : '—';
-      btcToSellInput.max = btcObtained > 0 ? btcObtained.toFixed(8) : '';
-      sellAllBtn.disabled = btcObtained <= 0;
+      btcObtainedOutput.textContent = btcAvailable > 0 ? formatBtcAmount(btcAvailable) : '—';
+      btcAvailableOutput.textContent = btcAvailable > 0 ? formatBtcAmount(btcAvailable) : '—';
+      btcToSellInput.max = btcAvailable > 0 ? btcAvailable.toFixed(BTC_DECIMALS) : '';
+      sellAllBtn.disabled = btcAvailable <= 0;
 
-      if (syncSell) {
-        syncSellAmount(btcObtained);
-      }
+      syncSellAmount(btcToSellInput, btcAvailable, firstSellState);
 
-      let btcToSell = parseFloat(btcToSellInput.value) || 0;
-      if (btcObtained > 0 && btcToSell > btcObtained) {
-        btcToSell = btcObtained;
-        btcToSellInput.value = btcObtained.toFixed(8);
-        btcSellManuallyEdited = false;
-        showWarning('No puedes vender más BTC del que has obtenido. He ajustado el valor al máximo disponible.');
-      }
+      const btcToSell = clampSellAmount(
+        btcToSellInput,
+        btcAvailable,
+        firstSellState,
+        saleWarningOutput,
+        'No puedes vender más BTC del que has obtenido. He ajustado el valor al máximo disponible.'
+      );
 
-      if (!(btcObtained > 0) || !(btcToSell > 0) || !(sellPrice > 0)) {
-        resetSaleResults();
+      if (!(btcAvailable > 0) || !(btcToSell > 0) || !(sellPrice > 0)) {
+        resetFirstSaleResults();
+        shareData = null;
+        shareBtn.disabled = true;
+        resetSecondTradeResults();
         return;
       }
 
-      const soldCostBasis = btcToSell * buyPrice;
-      const finalUsdt = btcToSell * sellPrice;
+      const soldShare = btcAvailable > 0 ? Math.min(1, btcToSell / btcAvailable) : 0;
+      const effectiveBtcSold = btcObtainedExact * soldShare;
+      const soldCostBasis = invested * soldShare;
+      const finalUsdt = effectiveBtcSold * sellPrice;
       const profit = finalUsdt - soldCostBasis;
       const returnPct = soldCostBasis > 0 ? (profit / soldCostBasis) * 100 : 0;
       const priceChangePct = buyPrice > 0 ? ((sellPrice / buyPrice) - 1) * 100 : 0;
-      const remainingBtc = Math.max(0, btcObtained - btcToSell);
+      const remainingBtc = Math.max(0, roundBtc(btcAvailable - btcToSell));
 
       finalUsdtOutput.textContent = formatUsdt(finalUsdt);
-      profitOutput.textContent = formatSignedUsdt(profit);
-      returnOutput.textContent = formatSignedPercent(returnPct);
-      priceChangeOutput.textContent = formatSignedPercent(priceChangePct);
-
       setSignedValue(profitOutput, profit, formatSignedUsdt);
       setSignedValue(returnOutput, returnPct, formatSignedPercent);
       setSignedValue(priceChangeOutput, priceChangePct, formatSignedPercent);
 
-      saleContextOutput.textContent = `Coste del BTC vendido: ${formatUsdt(soldCostBasis)} · BTC restantes: ${formatBtcAmount(remainingBtc)}`;
+      saleContextOutput.textContent = `Capital inicial asociado al BTC vendido: ${formatUsdt(soldCostBasis)} · BTC restantes: ${formatBtcAmount(remainingBtc)}`;
 
-      tradeData = {
+      const firstTrade = {
         invested,
         buyPrice,
-        btcObtained,
+        btcAvailable,
         btcToSell,
         sellPrice,
+        soldCostBasis,
         finalUsdt,
-        profit,
         returnPct
       };
+
+      shareData = buildFirstShareData(firstTrade);
       shareBtn.disabled = false;
+
+      calculateSecondTrade(firstTrade);
     }
 
     function shareTrade() {
-      if (!tradeData) return;
-      const text = `Si compro #Bitcoin con ${formatUsdt(tradeData.invested)} a ${formatUsdt(tradeData.buyPrice)} por BTC y vendo ${formatBtcAmount(tradeData.btcToSell)} a ${formatUsdt(tradeData.sellPrice)}, obtengo ${formatUsdt(tradeData.finalUsdt)} (${formatSignedPercent(tradeData.returnPct)})\n\nCalculadora:`;
+      if (!shareData) return;
+
+      let text = '';
+      if (shareData.type === 'chain') {
+        text = `Si encadeno dos operaciones en #Bitcoin desde ${formatUsdt(shareData.invested)}, comprando a ${formatUsdt(shareData.firstBuyPrice)} y luego recomprando a ${formatUsdt(shareData.secondBuyPrice)} por BTC, termino con ${formatUsdt(shareData.finalUsdt)} (${formatSignedPercent(shareData.cumulativeReturnPct)})\n\nCalculadora:`;
+      } else {
+        text = `Si compro #Bitcoin con ${formatUsdt(shareData.invested)} a ${formatUsdt(shareData.buyPrice)} por BTC y vendo ${formatBtcAmount(shareData.btcToSell)} a ${formatUsdt(shareData.sellPrice)}, obtengo ${formatUsdt(shareData.finalUsdt)} (${formatSignedPercent(shareData.returnPct)})\n\nCalculadora:`;
+      }
+
       shareOnTwitter(text, 'https://bitcoincalculadora.com/calculadora-compra-venta/');
     }
 
-    usdtInvestedInput.addEventListener('input', () => calculateTrade({ syncSell: true }));
-    buyPriceInput.addEventListener('input', () => calculateTrade({ syncSell: true }));
-    sellPriceInput.addEventListener('input', () => calculateTrade());
+    usdtInvestedInput.addEventListener('input', calculateTradeChain);
+    buyPriceInput.addEventListener('input', calculateTradeChain);
+    sellPriceInput.addEventListener('input', calculateTradeChain);
     btcToSellInput.addEventListener('input', () => {
-      btcSellManuallyEdited = true;
-      calculateTrade();
+      firstSellState.edited = true;
+      calculateTradeChain();
     });
     sellAllBtn.addEventListener('click', () => {
-      btcSellManuallyEdited = false;
-      calculateTrade({ syncSell: true });
+      firstSellState.edited = false;
+      calculateTradeChain();
     });
+
+    rebuyPriceInput.addEventListener('input', calculateTradeChain);
+    secondSellPriceInput.addEventListener('input', calculateTradeChain);
+    rebuyBtcToSellInput.addEventListener('input', () => {
+      secondSellState.edited = true;
+      calculateTradeChain();
+    });
+    secondSellAllBtn.addEventListener('click', () => {
+      secondSellState.edited = false;
+      calculateTradeChain();
+    });
+
     shareBtn.addEventListener('click', shareTrade);
 
-    calculateTrade({ syncSell: true });
+    calculateTradeChain();
     initPriceUpdates();
   </script>
 
