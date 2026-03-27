@@ -287,11 +287,6 @@ def build_page(page_path, relative_path):
         'donation_bolt12_offer',
         'lno1pgqppmsrse80qf0aara4slvcjxrvu6j2rp5ftmjy4yntlsmsutpkvkt6878syhxgefxqe6tpwem3qz2ckm4u58wzf0qttasfff6vxuts6rev004cqgpz0p5gc4pp7k6e5czwtvn6aapuz3npjgp3t28n9wvh2xqxry959csqx0qy5trzw3qxfjmh0qd89zh4c3e8ympajkug7qsty7xhtqwyfj2syhhajpldvh8e9xwhxs4snjcdq883uteq96zmy7w6stwsjx9szxuj47u89cl6mwx9cu0xg2c245wztw476ul8qqerp5w6dulw6yshx95qjw7lerqanqfxkh0ahxfqp9qya57nydsspfy47ud6eju2djdlwpyf9qvlfc6z6guq'
     )
-    context.setdefault('donation_onchain_uri', 'bitcoin:bc1qqqnmg5yfxjyskqamyvwu3l33dtcjhrq6reuwxj')
-    context.setdefault('donation_onchain_address', 'bc1qqqnmg5yfxjyskqamyvwu3l33dtcjhrq6reuwxj')
-    context.setdefault('donation_lightning_address', 'applealpaca64@phoenixwallet.me')
-    context.setdefault('donation_nostr_nip05', 'voidhash@nostr.lol')
-    context.setdefault('donation_nostr_url', 'https://njump.me/voidhash@nostr.lol')
     context.setdefault('show_donation_panel', '1')
     
     # Pre-render the body content (resolve includes like {{>affiliates}} in content)

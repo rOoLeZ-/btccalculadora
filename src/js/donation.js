@@ -24,6 +24,12 @@ function renderDonationQr() {
   });
 }
 
+function setDonationStatus(message) {
+  const statusNode = document.getElementById("donation-status");
+  if (!statusNode) return;
+  statusNode.textContent = message;
+}
+
 async function copyDonationText(text) {
   if (!text) return false;
 
@@ -60,12 +66,16 @@ function initDonationCopyButtons() {
       if (!text) return;
 
       const copied = await copyDonationText(text);
-      if (!copied) return;
+      if (!copied) {
+        setDonationStatus("No hemos podido copiar el codigo. Copialo manualmente.");
+        return;
+      }
 
       const originalLabel = button.dataset.originalLabel || button.textContent;
       button.dataset.originalLabel = originalLabel;
       button.textContent = "Copiado";
       button.classList.add("is-copied");
+      setDonationStatus(button.dataset.copySuccess || "Codigo copiado");
 
       window.setTimeout(() => {
         button.textContent = originalLabel;

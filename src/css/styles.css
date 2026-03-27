@@ -246,32 +246,6 @@ footer a:hover { text-decoration: underline; }
   border-color: #ffab45;
   color: #141414;
 }
-.donation-method-list {
-  display: grid;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-.donation-method {
-  padding: 12px 14px;
-  background: rgba(20, 20, 20, 0.5);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-}
-.donation-method-label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-.donation-method code {
-  display: block;
-  font-family: 'Geist Mono', monospace;
-  font-size: 0.8125rem;
-  color: var(--text);
-  word-break: break-all;
-}
 .donation-footer-note {
   font-size: 0.75rem;
   color: var(--text-secondary);
@@ -314,8 +288,7 @@ footer a:hover { text-decoration: underline; }
 }
 .donation-lead,
 .donation-method-card p,
-.donation-note,
-.donation-list {
+.donation-note {
   color: var(--text-secondary);
   font-size: 0.875rem;
   line-height: 1.6;
@@ -382,6 +355,13 @@ footer a:hover { text-decoration: underline; }
   cursor: pointer;
   transition: all 0.15s ease;
 }
+.donation-copy-btn:focus-visible,
+.donation-link-btn:focus-visible,
+.nav-donate-btn:focus-visible,
+.donation-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 .donation-copy-btn:hover,
 .donation-link-btn:hover {
   background: var(--accent-dim);
@@ -405,11 +385,11 @@ footer a:hover { text-decoration: underline; }
   border-color: var(--green);
   color: var(--green);
 }
-.donation-list {
-  padding-left: 18px;
-}
-.donation-list li + li {
-  margin-top: 8px;
+.donation-status {
+  min-height: 20px;
+  margin: -4px 0 16px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
 }
 .donation-qr-panel {
   display: flex;
@@ -446,14 +426,15 @@ footer a:hover { text-decoration: underline; }
 }
 .donation-method-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 16px;
 }
 .donation-method-card {
   padding: 20px;
 }
-.donation-faq {
+.donation-note-subtle {
   margin-top: 8px;
+  font-size: 0.8125rem;
 }
 
 .nav-calculadoras {
@@ -555,8 +536,8 @@ footer a:hover { text-decoration: underline; }
   .donation-footer-actions { flex-direction: column; }
   .donation-btn { width: 100%; }
   .donation-primary-card,
-  .donation-method-card,
   .donation-qr-card { padding: 18px; }
+  .donation-method-card { padding: 18px; }
   .donation-action-row {
     flex-direction: column;
   }
