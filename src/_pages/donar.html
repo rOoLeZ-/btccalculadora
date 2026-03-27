@@ -1,0 +1,122 @@
+---
+layout: tool
+title: Donar con Bitcoin | Bitcoin Calculadora
+description: Apoya Bitcoin Calculadora con Lightning moderno, QR BOLT12, direccion on-chain y Lightning Address.
+keywords: donar bitcoin, bolt12, lightning, qr bitcoin, donaciones bitcoin
+canonical: /donar/
+subtitle: Donar con Bitcoin
+og_title: Donar con Bitcoin | Bitcoin Calculadora
+og_description: Apoya Bitcoin Calculadora con QR BOLT12, direccion on-chain y Lightning Address.
+show_donation_panel: 0
+extra_styles: |
+  .container { max-width: 960px; }
+extra_scripts: |
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="/js/donation.js"></script>
+---
+
+    <div class="hero-text donation-hero">
+      <h2>Apoya Bitcoin Calculadora con <span class="accent">Bitcoin</span></h2>
+      <p>Hemos integrado una pagina propia de donaciones con los mismos datos de cobro validados: QR BOLT12, direccion on-chain y Lightning Address.</p>
+    </div>
+
+    <section class="donation-page" aria-label="Metodos de donacion">
+      <article class="donation-primary-card">
+        <div class="donation-primary-copy">
+          <p class="donation-section-kicker">Metodo principal</p>
+          <h3>BOLT12 reutilizable</h3>
+          <p class="donation-lead">Priorizamos Lightning moderno para mantener comisiones bajas y una experiencia simple. El QR usa el mismo <code>bitcoin:?lno=...</code> que publicamos como metodo principal.</p>
+
+          <div class="donation-chip-row" aria-label="Ventajas del metodo principal">
+            <span class="donation-chip">Lightning</span>
+            <span class="donation-chip">Reutilizable</span>
+            <span class="donation-chip">Bajas comisiones</span>
+          </div>
+
+          <div class="donation-code-card">
+            <span class="donation-code-label">Oferta BOLT12</span>
+            <code id="bolt12-offer-value">{{donation_bolt12_offer}}</code>
+            <button class="donation-copy-btn" type="button" data-copy-target="bolt12-offer-value">Copiar oferta</button>
+          </div>
+
+          <div class="donation-action-row">
+            <a class="donation-link-btn donation-link-btn-primary" id="bolt12-open-link" href="{{donation_bolt12_uri}}" rel="nofollow">Abrir wallet</a>
+            <button class="donation-copy-btn" type="button" data-copy-value="{{donation_bolt12_uri}}">Copiar Bitcoin URI</button>
+          </div>
+
+          <ul class="donation-list">
+            <li>Usa este QR si tu wallet soporta BOLT12 o el parametro <code>lno=</code>.</li>
+            <li>Si tu wallet no lo detecta, copia la oferta directamente o pasa al metodo on-chain.</li>
+            <li>La Lightning Address queda como opcion secundaria porque la compatibilidad entre wallets sigue siendo desigual.</li>
+          </ul>
+        </div>
+
+        <div class="donation-qr-panel">
+          <div class="donation-qr-card">
+            <div class="donation-qr-frame">
+              <div id="bolt12-qr" class="donation-qr" data-qr-text="{{donation_bolt12_uri}}" role="img" aria-label="QR para donar por Lightning con BOLT12"></div>
+            </div>
+            <p class="donation-note">Escanealo desde una wallet Lightning moderna. Si no abre bien, usa copiar oferta o el metodo on-chain.</p>
+          </div>
+        </div>
+      </article>
+
+      <div class="donation-method-grid">
+        <article class="donation-method-card">
+          <p class="donation-section-kicker">Respaldo universal</p>
+          <h3>On-chain</h3>
+          <p>Si prefieres la red principal de Bitcoin, esta es la direccion publica del proyecto.</p>
+          <div class="donation-code-card">
+            <span class="donation-code-label">Direccion Bitcoin</span>
+            <code id="onchain-address-value">{{donation_onchain_address}}</code>
+            <button class="donation-copy-btn" type="button" data-copy-target="onchain-address-value">Copiar direccion</button>
+          </div>
+          <div class="donation-action-row">
+            <a class="donation-link-btn" href="{{donation_onchain_uri}}" rel="nofollow">Abrir on-chain</a>
+          </div>
+        </article>
+
+        <article class="donation-method-card">
+          <p class="donation-section-kicker">Metodo secundario</p>
+          <h3>Lightning Address</h3>
+          <p>La mantenemos visible para wallets compatibles, pero no es el metodo principal.</p>
+          <div class="donation-code-card">
+            <span class="donation-code-label">Lightning Address</span>
+            <code id="lightning-address-value">{{donation_lightning_address}}</code>
+            <button class="donation-copy-btn" type="button" data-copy-target="lightning-address-value">Copiar address</button>
+          </div>
+        </article>
+
+        <article class="donation-method-card">
+          <p class="donation-section-kicker">Social + zaps</p>
+          <h3>Nostr</h3>
+          <p>Tambien puedes encontrarnos en Nostr para seguir el proyecto y enviar zaps.</p>
+          <div class="donation-code-card">
+            <span class="donation-code-label">NIP-05</span>
+            <code id="nostr-nip05-value">{{donation_nostr_nip05}}</code>
+            <button class="donation-copy-btn" type="button" data-copy-target="nostr-nip05-value">Copiar NIP-05</button>
+          </div>
+          <div class="donation-action-row">
+            <a class="donation-link-btn" href="{{donation_nostr_url}}" target="_blank" rel="noopener noreferrer">Ver perfil en Nostr</a>
+          </div>
+        </article>
+      </div>
+
+      <section class="faq-section donation-faq" aria-label="Compatibilidad de wallets">
+        <h2>Compatibilidad</h2>
+        <article class="faq-item">
+          <h3>Wallets recomendadas</h3>
+          <p>Phoenix, Zeus y otras wallets Lightning modernas suelen manejar mejor BOLT12 y el parametro <code>lno=</code>.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Si tu wallet no reconoce el QR</h3>
+          <p>Copia la oferta BOLT12 manualmente o usa la direccion on-chain como alternativa universal.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Datos publicados</h3>
+          <p>Esta pagina replica los mismos datos de donacion validados previamente: la oferta BOLT12, la direccion on-chain <code>{{donation_onchain_address}}</code> y la Lightning Address <code>{{donation_lightning_address}}</code>.</p>
+        </article>
+      </section>
+    </section>
+
+{{>footer-blog}}

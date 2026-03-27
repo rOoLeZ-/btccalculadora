@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO Primary Meta Tags -->
+  <title>Donar con Bitcoin | Bitcoin Calculadora</title>
+  <meta name="title" content="Donar con Bitcoin | Bitcoin Calculadora">
+  <meta name="description" content="Apoya Bitcoin Calculadora con Lightning moderno, QR BOLT12, direccion on-chain y Lightning Address.">
+  <meta name="keywords" content="donar bitcoin, bolt12, lightning, qr bitcoin, donaciones bitcoin">
+  <meta name="author" content="Bitcoin Calculadora">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://bitcoincalculadora.com/donar/">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bitcoincalculadora.com/donar/">
+  <meta property="og:title" content="Donar con Bitcoin | Bitcoin Calculadora">
+  <meta property="og:description" content="Apoya Bitcoin Calculadora con QR BOLT12, direccion on-chain y Lightning Address.">
+  <meta property="og:image" content="https://bitcoincalculadora.com/assets/og-image.png">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:site_name" content="Bitcoin Calculadora">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://bitcoincalculadora.com/donar/">
+  <meta name="twitter:title" content="Donar con Bitcoin | Bitcoin Calculadora">
+  <meta name="twitter:description" content="Apoya Bitcoin Calculadora con QR BOLT12, direccion on-chain y Lightning Address.">
+  <meta name="twitter:image" content="https://bitcoincalculadora.com/assets/og-image.png">
+
+  
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23f7931a'/><text y='.9em' x='50%' text-anchor='middle' font-size='70' fill='white'>₿</text></svg>">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/styles.css">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZSPP1PNLP1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZSPP1PNLP1');
+  </script>
+
+
+  <style>
+.container { max-width: 960px; }
+  </style>
+
+</head>
+<body>
+
+  <div class="site-nav">
+    <div class="nav-inner">
+      <div class="nav-top">
+        <a href="/" class="nav-brand">
+          <svg class="btc-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="#f7931a"/><path d="M67.8 44.3c1-6.6-4-10.2-10.9-12.5l2.2-8.9-5.4-1.3-2.2 8.7c-1.4-.4-2.9-.7-4.3-1l2.2-8.7-5.4-1.3-2.2 8.9c-1.2-.3-2.3-.5-3.4-.8l-7.5-1.9-1.4 5.8s4 .9 3.9 1c2.2.5 2.6 2 2.5 3.1l-2.5 10.2c.2 0 .3.1.5.1l-.5-.1-3.6 14.3c-.3.7-.9 1.7-2.5 1.3.1.1-3.9-1-3.9-1L22 66l7 1.7c1.3.3 2.6.7 3.9 1l-2.3 9 5.4 1.3 2.2-8.9c1.5.4 2.9.8 4.3 1.1l-2.2 8.8 5.4 1.3 2.3-9c9.3 1.8 16.3.7 19.3-7.4 2.4-6.5-.1-10.3-4.8-12.7 3.4-.8 6-3.1 6.7-7.9zM58 55c-1.7 6.8-13.2 3.1-16.9 2.2l3-12.1c3.7.9 15.7 2.8 13.9 9.9zm1.7-17.5c-1.6 6.2-11.1 3-14.2 2.3l2.7-11c3.1.8 13.2 2.2 11.5 8.7z" fill="#fff"/></svg>
+          <span>Bitcoin Calculadora</span>
+          <span class="nav-subtitle">Donar con Bitcoin</span>
+        </a>
+        <a href="/donar/" class="nav-donate-btn">Donar</a>
+        <button class="nav-hamburger" onclick="document.querySelector('.nav-calculadoras').classList.toggle('open');this.textContent=this.textContent==='☰'?'✕':'☰'" aria-label="Menú">☰</button>
+      </div>
+    <!-- Navegación entre calculadoras -->
+    <nav class="nav-calculadoras" aria-label="Calculadoras disponibles">
+      <a href="/" class="nav-link ">💰 Sueldo</a>
+      <a href="/calculadora-dca/" class="nav-link ">📈 DCA</a>
+      <a href="/conversor/" class="nav-link ">🔄 Conversor</a>
+      <a href="/calculadora-compra-venta/" class="nav-link ">💱 Compra/Venta</a>
+      <a href="/calculadora-predicciones/" class="nav-link ">🔮 Predicciones</a>
+      <a href="/si-hubiera-comprado/" class="nav-link ">🕰️ Si hubiera</a>
+      <a href="/calculadora-impuestos/" class="nav-link ">🧾 Impuestos</a>
+      <a href="/calculadora-fees/" class="nav-link ">⛏️ Fees</a>
+      <a href="/comparador-exchanges/" class="nav-link ">🏦 Exchanges</a>
+      <a href="/calculadora-herencia/" class="nav-link ">📜 Herencia</a>
+      <a href="/blog/" class="nav-link ">📝 Blog</a>
+    </nav>
+
+    </div>
+  </div>
+
+  <main class="container">
+
+<div class="hero-text donation-hero">
+      <h2>Apoya Bitcoin Calculadora con <span class="accent">Bitcoin</span></h2>
+      <p>Hemos integrado una pagina propia de donaciones con los mismos datos de cobro validados: QR BOLT12, direccion on-chain y Lightning Address.</p>
+    </div>
+
+    <section class="donation-page" aria-label="Metodos de donacion">
+      <article class="donation-primary-card">
+        <div class="donation-primary-copy">
+          <p class="donation-section-kicker">Metodo principal</p>
+          <h3>BOLT12 reutilizable</h3>
+          <p class="donation-lead">Priorizamos Lightning moderno para mantener comisiones bajas y una experiencia simple. El QR usa el mismo <code>bitcoin:?lno=...</code> que publicamos como metodo principal.</p>
+
+          <div class="donation-chip-row" aria-label="Ventajas del metodo principal">
+            <span class="donation-chip">Lightning</span>
+            <span class="donation-chip">Reutilizable</span>
+            <span class="donation-chip">Bajas comisiones</span>
+          </div>
+
+          <div class="donation-code-card">
+            <span class="donation-code-label">Oferta BOLT12</span>
+            <code id="bolt12-offer-value">lno1pgqppmsrse80qf0aara4slvcjxrvu6j2rp5ftmjy4yntlsmsutpkvkt6878syhxgefxqe6tpwem3qz2ckm4u58wzf0qttasfff6vxuts6rev004cqgpz0p5gc4pp7k6e5czwtvn6aapuz3npjgp3t28n9wvh2xqxry959csqx0qy5trzw3qxfjmh0qd89zh4c3e8ympajkug7qsty7xhtqwyfj2syhhajpldvh8e9xwhxs4snjcdq883uteq96zmy7w6stwsjx9szxuj47u89cl6mwx9cu0xg2c245wztw476ul8qqerp5w6dulw6yshx95qjw7lerqanqfxkh0ahxfqp9qya57nydsspfy47ud6eju2djdlwpyf9qvlfc6z6guq</code>
+            <button class="donation-copy-btn" type="button" data-copy-target="bolt12-offer-value">Copiar oferta</button>
+          </div>
+
+          <div class="donation-action-row">
+            <a class="donation-link-btn donation-link-btn-primary" id="bolt12-open-link" href="bitcoin:?lno=lno1pgqppmsrse80qf0aara4slvcjxrvu6j2rp5ftmjy4yntlsmsutpkvkt6878syhxgefxqe6tpwem3qz2ckm4u58wzf0qttasfff6vxuts6rev004cqgpz0p5gc4pp7k6e5czwtvn6aapuz3npjgp3t28n9wvh2xqxry959csqx0qy5trzw3qxfjmh0qd89zh4c3e8ympajkug7qsty7xhtqwyfj2syhhajpldvh8e9xwhxs4snjcdq883uteq96zmy7w6stwsjx9szxuj47u89cl6mwx9cu0xg2c245wztw476ul8qqerp5w6dulw6yshx95qjw7lerqanqfxkh0ahxfqp9qya57nydsspfy47ud6eju2djdlwpyf9qvlfc6z6guq" rel="nofollow">Abrir wallet</a>
+            <button class="donation-copy-btn" type="button" data-copy-value="bitcoin:?lno=lno1pgqppmsrse80qf0aara4slvcjxrvu6j2rp5ftmjy4yntlsmsutpkvkt6878syhxgefxqe6tpwem3qz2ckm4u58wzf0qttasfff6vxuts6rev004cqgpz0p5gc4pp7k6e5czwtvn6aapuz3npjgp3t28n9wvh2xqxry959csqx0qy5trzw3qxfjmh0qd89zh4c3e8ympajkug7qsty7xhtqwyfj2syhhajpldvh8e9xwhxs4snjcdq883uteq96zmy7w6stwsjx9szxuj47u89cl6mwx9cu0xg2c245wztw476ul8qqerp5w6dulw6yshx95qjw7lerqanqfxkh0ahxfqp9qya57nydsspfy47ud6eju2djdlwpyf9qvlfc6z6guq">Copiar Bitcoin URI</button>
+          </div>
+
+          <ul class="donation-list">
+            <li>Usa este QR si tu wallet soporta BOLT12 o el parametro <code>lno=</code>.</li>
+            <li>Si tu wallet no lo detecta, copia la oferta directamente o pasa al metodo on-chain.</li>
+            <li>La Lightning Address queda como opcion secundaria porque la compatibilidad entre wallets sigue siendo desigual.</li>
+          </ul>
+        </div>
+
+        <div class="donation-qr-panel">
+          <div class="donation-qr-card">
+            <div class="donation-qr-frame">
+              <div id="bolt12-qr" class="donation-qr" data-qr-text="bitcoin:?lno=lno1pgqppmsrse80qf0aara4slvcjxrvu6j2rp5ftmjy4yntlsmsutpkvkt6878syhxgefxqe6tpwem3qz2ckm4u58wzf0qttasfff6vxuts6rev004cqgpz0p5gc4pp7k6e5czwtvn6aapuz3npjgp3t28n9wvh2xqxry959csqx0qy5trzw3qxfjmh0qd89zh4c3e8ympajkug7qsty7xhtqwyfj2syhhajpldvh8e9xwhxs4snjcdq883uteq96zmy7w6stwsjx9szxuj47u89cl6mwx9cu0xg2c245wztw476ul8qqerp5w6dulw6yshx95qjw7lerqanqfxkh0ahxfqp9qya57nydsspfy47ud6eju2djdlwpyf9qvlfc6z6guq" role="img" aria-label="QR para donar por Lightning con BOLT12"></div>
+            </div>
+            <p class="donation-note">Escanealo desde una wallet Lightning moderna. Si no abre bien, usa copiar oferta o el metodo on-chain.</p>
+          </div>
+        </div>
+      </article>
+
+      <div class="donation-method-grid">
+        <article class="donation-method-card">
+          <p class="donation-section-kicker">Respaldo universal</p>
+          <h3>On-chain</h3>
+          <p>Si prefieres la red principal de Bitcoin, esta es la direccion publica del proyecto.</p>
+          <div class="donation-code-card">
+            <span class="donation-code-label">Direccion Bitcoin</span>
+            <code id="onchain-address-value">bc1qqqnmg5yfxjyskqamyvwu3l33dtcjhrq6reuwxj</code>
+            <button class="donation-copy-btn" type="button" data-copy-target="onchain-address-value">Copiar direccion</button>
+          </div>
+          <div class="donation-action-row">
+            <a class="donation-link-btn" href="bitcoin:bc1qqqnmg5yfxjyskqamyvwu3l33dtcjhrq6reuwxj" rel="nofollow">Abrir on-chain</a>
+          </div>
+        </article>
+
+        <article class="donation-method-card">
+          <p class="donation-section-kicker">Metodo secundario</p>
+          <h3>Lightning Address</h3>
+          <p>La mantenemos visible para wallets compatibles, pero no es el metodo principal.</p>
+          <div class="donation-code-card">
+            <span class="donation-code-label">Lightning Address</span>
+            <code id="lightning-address-value">applealpaca64@phoenixwallet.me</code>
+            <button class="donation-copy-btn" type="button" data-copy-target="lightning-address-value">Copiar address</button>
+          </div>
+        </article>
+
+        <article class="donation-method-card">
+          <p class="donation-section-kicker">Social + zaps</p>
+          <h3>Nostr</h3>
+          <p>Tambien puedes encontrarnos en Nostr para seguir el proyecto y enviar zaps.</p>
+          <div class="donation-code-card">
+            <span class="donation-code-label">NIP-05</span>
+            <code id="nostr-nip05-value">voidhash@nostr.lol</code>
+            <button class="donation-copy-btn" type="button" data-copy-target="nostr-nip05-value">Copiar NIP-05</button>
+          </div>
+          <div class="donation-action-row">
+            <a class="donation-link-btn" href="https://njump.me/voidhash@nostr.lol" target="_blank" rel="noopener noreferrer">Ver perfil en Nostr</a>
+          </div>
+        </article>
+      </div>
+
+      <section class="faq-section donation-faq" aria-label="Compatibilidad de wallets">
+        <h2>Compatibilidad</h2>
+        <article class="faq-item">
+          <h3>Wallets recomendadas</h3>
+          <p>Phoenix, Zeus y otras wallets Lightning modernas suelen manejar mejor BOLT12 y el parametro <code>lno=</code>.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Si tu wallet no reconoce el QR</h3>
+          <p>Copia la oferta BOLT12 manualmente o usa la direccion on-chain como alternativa universal.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Datos publicados</h3>
+          <p>Esta pagina replica los mismos datos de donacion validados previamente: la oferta BOLT12, la direccion on-chain <code>bc1qqqnmg5yfxjyskqamyvwu3l33dtcjhrq6reuwxj</code> y la Lightning Address <code>applealpaca64@phoenixwallet.me</code>.</p>
+        </article>
+      </section>
+    </section>
+
+    <footer>
+      
+      <p>
+        
+        © 2026 <a href="/">Bitcoin Calculadora</a> · Esto no es asesoramiento financiero
+      </p>
+    </footer>
+
+
+  </main>
+
+  <script src="/js/main.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="/js/donation.js"></script>
+
+</body>
+</html>
